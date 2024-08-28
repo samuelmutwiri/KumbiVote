@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - mongodb
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: election_db
+      POSTGRES_USER: election_user
+      POSTGRES_PASSWORD: election_password
+    volumes:
+      - ./database/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  mongodb:
+    image: mongo:4.4
+    environment:
+      MONGO_INITDB_DATABASE: election_mongodb
+    volumes:
+      - ./database/mongodb/init.js:/docker-entrypoint-initdb.d/init.js
+
+  blockchain:
+    image: trufflesuite/ganache-cli:latest
+    ports:
+      - "8545:8545"

@@ -1,0 +1,14 @@
+# Node Modules
+blockchain/node-modules
+frontend/node-modules
+
+# Python environments
+backend/venv
+backend/*/__pycache__/*
+__pycache__*
+
+# Vim artifacts
+*.py~
+*.js~
+*.ts~
+*~

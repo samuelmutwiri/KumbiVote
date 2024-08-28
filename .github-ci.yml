@@ -1,0 +1,33 @@
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  DOCKER_DRIVER: overlay2
+
+services:
+  - docker:dind
+
+build:
+  stage: build
+  image: docker:latest
+  script:
+    - docker-compose build
+
+test:
+  stage: test
+  image: docker:latest
+  script:
+    - docker-compose up -d
+    - docker-compose exec backend python manage.py test
+    - docker-compose exec frontend bun test
+    - cd blockchain && truffle test
+
+deploy:
+  stage: deploy
+  image: docker:latest
+  script:
+    - docker-compose up -d
+  only:
+    - main

@@ -1,0 +1,12 @@
+FROM node:14
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN bun install
+
+COPY . .
+
+RUN bun run build
+
+CMD ["bun", "start"]
