@@ -16,6 +16,7 @@ KumbiVote is a decentralized voting platform built on the Polygon network. It pr
 ## Setup
 
 ### Prerequisites
+
 - Git
 - Node.js/Bun
 - Javascript package management tool (npm/yarn/pnpm)
@@ -30,6 +31,7 @@ KumbiVote is a decentralized voting platform built on the Polygon network. It pr
 ### Environment Setup (Debian & Derivatives)
 
 #### 1. Git, Python, PostgreSQL
+
 ```bash
 sudo apt install git python3.10-full python3-pip python3-venv python3-pip-whl postgresql-14
 ```
@@ -50,16 +52,15 @@ sudo apt install git python3.10-full python3-pip python3-venv python3-pip-whl po
     npm -v # should print `10.8.2`
 ```
 
-
 #### 3. Solidity
 
-- ##### soljs via npm:
+- ##### soljs via npm
 
     ```bash
     npm i -g solc
     ```
 
-- ##### System binaries via package manager:
+- ##### System binaries via package manager
 
 ```bash
 sudo add-apt-repository ppa:ethereum/ethereum
@@ -76,18 +77,16 @@ npm i -g truffle
 > **¹** `Please note that the truffle suite is being retired.`
 > `See [Hardhat](https://www.hardhat.org/)`
 
-
-
 ### Installation
 
-#### 1. Clone the repository:
+#### 1. Clone the repository
 
 ```bash
 git clone https://github.com/kumbi-the-peoples-baraza/KumbiVote.git
 cd KumbiVote
 ```
 
- #### 2. Install dependencies:
+#### 2. Install dependencies
 
 - ##### BACKEND
 
@@ -114,63 +113,64 @@ npm install
 
 ### BACKEND
 
-#### Generate app secret key:
+#### Generate app secret key
 
-- ##### Using ssl:
+- ##### Using ssl
+
 ```bash
 openssl rand -base64 64
 ```
 
--  ##### Using python
+- ##### Using python
+
 ```bash
 python3 -c 'import secrets; print(secrets.token_urlsafe(64))'
 ```
 
 >> `Please copy key value from stdout and paste it to your environment file.`
 
-
-- #### Populate `.env` file and change environment variables:
+- #### Populate `.env` file and change environment variables
 
 ```bash
 mv .env.sample .env
 ```
 
-- ##### Configure PostgreSQL:
+- ##### Configure PostgreSQL
+
 *(To be shared as a script)*
 
-- ##### Test PostgreSQL connection to backend:
+- ##### Test PostgreSQL connection to backend
 
 ```bash
 python3 manage.py dbshell
 ```
 
-- ##### Run Migrations:
+- ##### Run Migrations
 
 ```bash
  python3 manage.py makemigrations
  python3 manage.py migrate --run-syncdb --verbosity 3
  ```
 
-- ##### Create a superuser:
+- ##### Create a superuser
 
 ```bash
 python manage.py createsuperuser
 ```
 
-- ##### Run the development server:
+- ##### Run the development server
 
 ```bash
 python manage.py runserver
 ```
 
-- ##### Open your web browser and navigate to:
+- ##### Open your web browser and navigate to
 
     `http://127.0.0.1:8000/`
 
-
 ### FRONTEND
 
-- ##### Run development server:
+- ##### Run development server
 
     ```bash
     npm run dev
@@ -179,7 +179,7 @@ python manage.py runserver
     yarn run dev
     ```
 
-    ##### You should see:
+  ##### You should see
 
     ```bash
     bun run dev
