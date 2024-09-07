@@ -1,9 +1,10 @@
+// SPDX-License-Identifier: UNLICENCED
 pragma solidity ^0.8.0;
 
-import "./VotingProcess.sol";
+import "./Voting.sol";
 import "./VoterRegistry.sol";
 
-contract ElectionStatistics {
+contract Results {
     VotingProcess public votingProcess;
     VoterRegistry public voterRegistry;
 

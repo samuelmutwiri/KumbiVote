@@ -2,9 +2,10 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract ElectionScheduler is Ownable {
-    struct Election {
+contract Poll is Ownable {
+    struct Poll {
         uint256 id;
+        uint256 positionId;
         string name;
         uint256 date;
         uint256 startTime;
