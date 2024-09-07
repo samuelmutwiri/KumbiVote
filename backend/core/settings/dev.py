@@ -17,13 +17,12 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = "django-insecure-1&1jv)pbljba!y+qud2-z4xn-ecmsasomef+(%9h!2n2do01^w"
-SECRET_KEY = config.get("app", "SECRET_KEY")
+SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -102,17 +101,17 @@ WSGI_APPLICATION = "core.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config.get("db", "DB_NAME"),
-        "HOST": config.get("db", "DB_HOST"),
-        "USER": config.get("db", "DB_USER"),
-        "PASSWORD": config.get("db", "DB_PASS"),
-        "PORT": config.get("db", "DB_PORT"),
-    }
-}
-
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": config("DB_NAME"),
+#         "HOST": config("DB_HOST"),
+#         "USER": config("DB_USER"),
+#         "PASSWORD": config("DB_PASS"),
+#         "PORT": config("DB_PORT"),
+#     },
+# }
+#
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
