@@ -154,8 +154,31 @@ mv .env.sample .env
 ```
 
 - ##### Configure PostgreSQL
+Initial setup instructions are on backend/utils/psql
+There are two files in that folder:
 
-*(To be shared as a script)*
+- ##### setup.sh
+List of common useful postgresql management commands and initial login.
+If PostgreSQL is already installed and the service is running you may run the
+command below to enter the psql shell.
+
+```bash
+psql -h hostname -p port -U postgres
+```
+
+
+- ##### setup.sql
+SQL script for initial setup so roles, users, privileges and database creation.
+You may use this script to set up the database and users thus:
+
+```bash
+psql -h localhost -U postgres < ~/Code/python/KumbiVote/backend/utils/psql/setup.sql
+```
+
+Alternatively you may load the script from the psql shell:
+```bash
+psql#LOAD ~/path/to/script/
+```
 
 - ##### Test PostgreSQL connection to backend
 

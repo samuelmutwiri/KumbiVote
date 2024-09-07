@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     # "corheaders",
     "oauth2_provider",
+    # Internal
     "apps.elections",
     "apps.orgs",
     "apps.register",
@@ -70,10 +71,10 @@ AUTHENTICATION_BACKENDS = (
 )
 
 OAUTH2_PROVIDER = {
-    'ACCESS_TOKEN_EXPIRE_SECONDS': 36000,  # Token expiration time in seconds
-    'AUTHORIZATION_CODE_EXPIRE_SECONDS': 3600,
-    'REFRESH_TOKEN_EXPIRE_SECONDS': 36000,
-    "SCOPES": {"read": "Read Scope", "write": "Write Scope"}
+    "ACCESS_TOKEN_EXPIRE_SECONDS": 36000,  # Token expiration time in seconds
+    "AUTHORIZATION_CODE_EXPIRE_SECONDS": 3600,
+    "REFRESH_TOKEN_EXPIRE_SECONDS": 36000,
+    "SCOPES": {"read": "Read Scope", "write": "Write Scope"},
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
