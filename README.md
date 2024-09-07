@@ -39,26 +39,26 @@ sudo apt install git python3.10-full python3-pip python3-venv python3-pip-whl po
 #### 2. Node.js via nvm
 
 ```bash
-    # installs nvm (Node Version Manager)
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+# installs nvm (Node Version Manager)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
 
-    # download and install Node.js (you may need to restart the terminal)
-    nvm install 18
+# download and install Node.js (you may need to restart the terminal)
+nvm install 18
 
-    # verifies the right Node.js version is in the environment
-    node -v # should print `v18.x.x`
+# verifies the right Node.js version is in the environment
+node -v # should print `v18.x.x`
 
-    # verifies the right npm version is in the environment
-    npm -v # should print `10.8.2`
+# verifies the right npm version is in the environment
+npm -v # should print `10.8.2`
 ```
 
 #### 3. Solidity
 
 - ##### soljs via npm
 
-    ```bash
-    npm i -g solc
-    ```
+```bash
+npm i -g solc
+```
 
 - ##### System binaries via package manager
 
@@ -74,8 +74,8 @@ sudo apt-get install solc
 npm i -g truffle
 ```
 
-> **¹** `Please note that the truffle suite is being retired.`
-> `See [Hardhat](https://www.hardhat.org/)`
+> **¹** `Please note that the truffle suite is being retired.
+> Please see [Hardhat](https://www.hardhat.org/)`
 
 ### Installation
 
@@ -127,7 +127,7 @@ openssl rand -base64 64
 python3 -c 'import secrets; print(secrets.token_urlsafe(64))'
 ```
 
->> `Please copy key value from stdout and paste it to your environment file.`
+> `Please copy key value from stdout and paste it to your environment file.`
 
 - #### Populate `.env` file and change environment variables
 
@@ -166,27 +166,27 @@ python manage.py runserver
 
 - ##### Open your web browser and navigate to
 
-    `http://127.0.0.1:8000/`
+`http://127.0.0.1:8000/`
 
 ### FRONTEND
 
 - ##### Run development server
 
-    ```bash
-    npm run dev
-    bun run dev
-    pnpm run dev
-    yarn run dev
-    ```
+```bash
+npm run dev
+bun run dev
+pnpm run dev
+yarn run dev
+```
 
-  ##### You should see
+##### You should see
 
-    ```bash
-    bun run dev
-    $ next dev
-      ▲ Next.js 14.2.6
-          - Local:        http://localhost:3000
+```bash
+bun run dev
+$ next dev
+▲ Next.js 14.2.6
+- Local:        http://localhost:3000
 
-         ✓ Starting...
-         ✓ Ready in 5.7s
-    ```
+✓ Starting...
+✓ Ready in 5.7s
+```
