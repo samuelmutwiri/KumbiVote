@@ -6,12 +6,12 @@ KumbiVote is a decentralized voting platform built on the Polygon network. It pr
 
 ## Project Structure
 
-- **contracts/**: Contains the Solidity smart contracts.
-- **migrations/**: Migration scripts for deploying contracts.
-- **test/**: Unit and integration tests.
-- **scripts/**: Scripts for deployment and contract interaction.
-- **build/**: Compiled contract artifacts.
-- **truffle-config.js**: Configuration for Truffle framework.
+- #### contracts/: Contains the Solidity smart contracts.
+- #### migrations/: Migration scripts for deploying contracts.
+- #### test/: Unit and integration tests.
+- #### scripts/: Scripts for deployment and contract interaction.
+- #### build/: Compiled contract artifacts.
+- #### truffle-config.js**: Configuration for Truffle framework.
 
 ## Setup
 
@@ -54,10 +54,14 @@ npm -v # should print `10.8.2`
 
 #### 3. Solidity
 
-- ##### soljs via npm
+- ##### solcjs via npm
 
 ```bash
+# Install solcjs
 npm i -g solc
+
+#Confirm Install
+solcjs --version
 ```
 
 - ##### System binaries via package manager
@@ -71,7 +75,11 @@ sudo apt-get install solc
 #### 4. Truffle Suite **¹**
 
 ```bash
+# Install truffle
 npm i -g truffle
+
+# Confirm Install
+truffle --version
 ```
 
 > **¹** `Please note that the truffle suite is being retired.
@@ -91,10 +99,17 @@ cd KumbiVote
 - ##### BACKEND
 
 ```bash
+# Change to the backend directory
 cd backend
+
+# Install a Python virtual environment
 python3 -m venv venv
+
+# Activate the virtual environment
 source venv/bin/activate
-pip3 install -r requirements.txt
+
+# Install dependencies
+pip install -r requirements.txt
 ```
 
 - ##### FRONTEND
@@ -118,12 +133,14 @@ npm install
 - ##### Using ssl
 
 ```bash
+# Generate Key
 openssl rand -base64 64
 ```
 
 - ##### Using python
 
 ```bash
+# Generate key using python
 python3 -c 'import secrets; print(secrets.token_urlsafe(64))'
 ```
 
@@ -132,6 +149,7 @@ python3 -c 'import secrets; print(secrets.token_urlsafe(64))'
 - #### Populate `.env` file and change environment variables
 
 ```bash
+# Rename sample file to .env
 mv .env.sample .env
 ```
 
@@ -142,6 +160,7 @@ mv .env.sample .env
 - ##### Test PostgreSQL connection to backend
 
 ```bash
+# Connect to Db shell from Django
 python3 manage.py dbshell
 ```
 
@@ -173,16 +192,26 @@ python manage.py runserver
 - ##### Run development server
 
 ```bash
+# Run dev server using npm
 npm run dev
+
+# Run dev server using bun
 bun run dev
+
+# Run dev server using pnpm
 pnpm run dev
+
+# Run dev server using yarn
 yarn run dev
+
+# NOTE: You're only supposed to invoke one of the above!
 ```
 
 ##### You should see
 
 ```bash
-bun run dev
+# Running dev instance using Bun
+$bun run dev
 $ next dev
 ▲ Next.js 14.2.6
 - Local:        http://localhost:3000
