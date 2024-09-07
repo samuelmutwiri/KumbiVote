@@ -27,7 +27,7 @@ KumbiVote is a decentralized voting platform built on the Polygon network. It pr
 - MetaMask with the Polygon Mumbai Testnet configured
 - Remix IDE (for contract development) - [OPTIONAL]
 
-#### Environment Setup (Debian & Derivatives)
+### Environment Setup (Debian & Derivatives)
 1. **Git, Python**
     ```bash
     sudo apt install git python3.10-full python3-pip python3-venv python3-pip-whl postgresql-14
@@ -86,7 +86,7 @@ KumbiVote is a decentralized voting platform built on the Polygon network. It pr
 
 2. **Install dependecies:**
 
-### (a) BACKEND
+- BACKEND
 
     ```bash
     cd backend
@@ -95,20 +95,21 @@ KumbiVote is a decentralized voting platform built on the Polygon network. It pr
     pip3 install -r requirements.txt
     ```
 
-### (b) FRONTEND
+- FRONTEND
 
     ```bash
     cd ../frontend/
     npm install
     ```
 
-### (c) BLOCKCHAIN
+- BLOCKCHAIN
 
     ```bash
     ```
 
 ### SETUP
-####(A) BACKEND
+
+###(A) BACKEND
 - Generate app secret key:
 
     (a) Using ssl:
@@ -165,7 +166,7 @@ KumbiVote is a decentralized voting platform built on the Polygon network. It pr
     http://127.0.0.1:8000/
     ```
 
-####(B) FRONTEND
+###(B) FRONTEND
 - **Run development server:**
 
     ```bash
