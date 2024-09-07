@@ -28,12 +28,15 @@ KumbiVote is a decentralized voting platform built on the Polygon network. It pr
 - Remix IDE (for contract development) - [OPTIONAL]
 
 ### Environment Setup (Debian & Derivatives)
-1. **Git, Python**
+
+1. ### Git, Python, PostgreSQL
+
     ```bash
     sudo apt install git python3.10-full python3-pip python3-venv python3-pip-whl postgresql-14
     ```
 
-2. **Node.js via nvm**
+2. ### Node.js via nvm
+
     ```bash
     # installs nvm (Node Version Manager)
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
@@ -49,44 +52,46 @@ KumbiVote is a decentralized voting platform built on the Polygon network. It pr
     ```
 
 
-3. **Solidity**:
+3. ### Solidity
 
-    - **soljs** via **npm:**
+- #### soljs via npm:
 
-        ```bash
-        npm i -g solc
-        ```
+    ```bash
+    npm i -g solc
+    ```
 
-    - **System binaries via package manager:**
+- #### System binaries via package manager:
 
-        ```bash
-        sudo add-apt-repository ppa:ethereum/ethereum
-        sudo apt-get update
-        sudo apt-get install solc
-        ```
+    ```bash
+    sudo add-apt-repository ppa:ethereum/ethereum
+    sudo apt-get update
+    sudo apt-get install solc
+    ```
 
-4. **Truffle:** 1^
+4. ### Truffle Suite [¹]
 
     ```bash
     npm i -g truffle
     ```
 
-> (1^) Please note that the truffle suite is being **SUNSET**!
-> See [Hardhat](https://www.hardhat.org/)
+> [¹] 
+>> ```Please note that the truffle suite is being retired.```
+>> ```See [Hardhat](https://www.hardhat.org/)```
 
 
-### Installation
 
-1. **Clone the repository:**
+## Installation
+
+1. ### Clone the repository:
 
     ```bash
     git clone https://github.com/kumbi-the-peoples-baraza/KumbiVote.git
     cd KumbiVote
     ```
 
-2. **Install dependecies:**
+2. ### Install dependencies:
 
-- BACKEND
+- #### BACKEND
 
     ```bash
     cd backend
@@ -95,79 +100,81 @@ KumbiVote is a decentralized voting platform built on the Polygon network. It pr
     pip3 install -r requirements.txt
     ```
 
-- FRONTEND
+- #### FRONTEND
 
     ```bash
     cd ../frontend/
     npm install
     ```
 
-- BLOCKCHAIN
+- #### BLOCKCHAIN
 
     ```bash
     ```
 
-### SETUP
+## SETUP
 
-###(A) BACKEND
-- Generate app secret key:
+### BACKEND
 
-    (a) Using ssl:
+- #### Generate app secret key:
+
+    1. ##### Using ssl
 
     ```bash
     openssl rand -base64 64
     ```
 
-    (b) Using python3
+    2. ##### Using python
 
     ```bash
     python3 -c 'import secrets; print(secrets.token_urlsafe(64))'
     ```
 
-> Copy value from stdout and paste it to your environment file.
+>> `Please copy key value from stdout and paste it to your environment file.`
 
-- **Populate `.env` file and change environment variables:**
+
+- #### Populate `.env` file and change environment variables:
 
     ```bash
     mv .env.sample .env
     ```
 
-- **Configure PostgrSQL:**
+- #### Configure PostgrSQL:
 *(To be shared as a script)*
 
-- **Test PostgreSQL connection to backend:**
+- #### Test PostgreSQL connection to backend:
 
     ```bash
     python3 manage.py dbshell
     ```
 
-- **Run Migrations:**
+- #### Run Migrations:
 
     ```bash
      python3 manage.py makemigrations
      python3 manage.py migrate --run-syncdb --verbosity 3
      ```
 
-- **Create a superuser:**
+- #### Create a superuser:
 
     ```bash
     python manage.py createsuperuser
     ```
 
-- **Run the development server:**
+- #### Run the development server:
 
     ```bash
     python manage.py runserver
     ```
 
-- **Open your web browser and navigate to:**
+- #### Open your web browser and navigate to:
 
-    ```
-    http://127.0.0.1:8000/
-    ```
+    `http://127.0.0.1:8000/`
 
-###(B) FRONTEND
-- **Run development server:**
+
+## FRONTEND
+
+- #### Run development server:
 
     ```bash
     npm run dev
@@ -176,7 +183,7 @@ KumbiVote is a decentralized voting platform built on the Polygon network. It pr
     yarn run dev
     ```
 
-    **You should see**
+    #### You should see:
 
     ```bash
     bun run dev
@@ -187,8 +194,3 @@ KumbiVote is a decentralized voting platform built on the Polygon network. It pr
          ✓ Starting...
          ✓ Ready in 5.7s
     ```
-
-
-
-
-
