@@ -30,13 +30,11 @@ KumbiVote is a decentralized voting platform built on the Polygon network. It pr
 ### Environment Setup (Debian & Derivatives)
 
 #### 1. Git, Python, PostgreSQL
-
     ```bash
     sudo apt install git python3.10-full python3-pip python3-venv python3-pip-whl postgresql-14
     ```
 
 #### 2. Node.js via nvm
-
     ```bash
     # installs nvm (Node Version Manager)
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
@@ -69,7 +67,6 @@ KumbiVote is a decentralized voting platform built on the Polygon network. It pr
     ```
 
 #### 4. Truffle Suite **¹**
-
     ```bash
     npm i -g truffle
     ```
@@ -82,7 +79,6 @@ KumbiVote is a decentralized voting platform built on the Polygon network. It pr
 ### Installation
 
 #### 1. Clone the repository:
-
     ```bash
     git clone https://github.com/kumbi-the-peoples-baraza/KumbiVote.git
     cd KumbiVote
@@ -117,14 +113,12 @@ KumbiVote is a decentralized voting platform built on the Polygon network. It pr
 
 #### Generate app secret key:
 
-    ##### 1. Using ssl
-
+- ##### Using ssl:
     ```bash
     openssl rand -base64 64
     ```
 
-    ##### 2. Using python
-
+-  ##### Using python
     ```bash
     python3 -c 'import secrets; print(secrets.token_urlsafe(64))'
     ```
