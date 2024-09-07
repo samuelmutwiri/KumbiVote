@@ -10,6 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+"""
+#########################################################
+############ IMPORTANT!!!!               ################
+#########################################################
+### ndikū 7th Sept '24'                              ####
+### PLEASE SEE, AND USE dev.py                       ####
+#########################################################
+"""
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -38,7 +46,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Third Party
-    #"corheaders",
+    # "corheaders",
     "oauth2_provider",
     "kumbivote",
     # "kumbivote.elections",
