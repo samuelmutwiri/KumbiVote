@@ -65,11 +65,16 @@ MIDDLEWARE = [
 ROOT_URLCONF = "core.urls"
 
 AUTHENTICATION_BACKENDS = (
-    "oauth2_provider.backends.OAuth2Backend",
     "django.contrib.auth.backends.ModelBackend",
+    "oauth2_provider.backends.OAuth2Backend",
 )
 
-OAUTH2_PROVIDER = {"SCOPES": {"read": "Read Scope", "write": "Write Scope"}}
+OAUTH2_PROVIDER = {
+    'ACCESS_TOKEN_EXPIRE_SECONDS': 36000,  # Token expiration time in seconds
+    'AUTHORIZATION_CODE_EXPIRE_SECONDS': 3600,
+    'REFRESH_TOKEN_EXPIRE_SECONDS': 36000,
+    "SCOPES": {"read": "Read Scope", "write": "Write Scope"}
+}
 
 CORS_ORIGIN_ALLOW_ALL = True
 
