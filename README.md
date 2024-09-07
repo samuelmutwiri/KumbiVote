@@ -68,15 +68,14 @@ KumbiVote is a decentralized voting platform built on the Polygon network. It pr
     sudo apt-get install solc
     ```
 
-#### 4. Truffle Suite [¹]
+#### 4. Truffle Suite **¹**
 
     ```bash
     npm i -g truffle
     ```
 
-> [¹]
->> ```Please note that the truffle suite is being retired.```
->> ```See [Hardhat](https://www.hardhat.org/)```
+> **¹** ```Please note that the truffle suite is being retired.```
+> ```See [Hardhat](https://www.hardhat.org/)```
 
 
 
