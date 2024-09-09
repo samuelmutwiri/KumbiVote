@@ -47,6 +47,15 @@ class User(AbstractBaseUser):
     updated_at = models.DateTimeField(auto_now=True)
     blockchain_id = models.CharField(max_length=100, blank=True)
 
+    """
+    TODO:
+    1. Extend with User Profilev
+    2. Modify model for OAuth2
+    3. Connect to Oauth2 Google, Meta, Apple
+    4. Connect model to blockchain
+    5. Implement ZKP
+    """
+
     objects = CustomUserManager()
 
     USERNAME_FIELD = "email"
@@ -54,6 +63,15 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.email
+
+
+class Profile(User):
+    """
+    User Profile
+    Manages a user profile
+    """
+
+    pass
 
 
 class UserActivity(models.Model):
