@@ -1,10 +1,6 @@
 import uuid
 
-from django.contrib.auth.models import (
-    AbstractBaseUser,
-    BaseUserManager,
-    PermissionsMixin,
-)
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 
 
@@ -24,7 +20,7 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser):
     GENDER = {
         "M": "Male",
         "F": "Female",
@@ -46,14 +42,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     phone_no = models.CharField(max_length=20, blank=True)
     gender = models.CharField(choices=GENDER, blank=False)
     dob = models.DateField(null=True, blank=True)
-    is_admin = models.BooleanField(default=False)
     status = models.CharField(max_length=20, default="active")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     blockchain_id = models.CharField(max_length=100, blank=True)
-
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 
