@@ -71,14 +71,15 @@ class Profile(User):
     Manages a user profile
     """
 
-    pass
-
 
 class UserActivity(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     activity_type = models.CharField(max_length=50)
     description = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    def log(self):
+        pass
 
     class Meta:
         ordering = ["-timestamp"]
