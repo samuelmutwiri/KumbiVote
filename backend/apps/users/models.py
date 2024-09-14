@@ -47,15 +47,6 @@ class User(AbstractBaseUser):
     updated_at = models.DateTimeField(auto_now=True)
     blockchain_id = models.CharField(max_length=100, blank=True)
 
-    """
-    TODO:
-    1. Extend with User Profilev
-    2. Modify model for OAuth2
-    3. Connect to Oauth2 Google, Meta, Apple
-    4. Connect model to blockchain
-    5. Implement ZKP
-    """
-
     objects = CustomUserManager()
 
     USERNAME_FIELD = "email"
@@ -65,20 +56,24 @@ class User(AbstractBaseUser):
         return self.email
 
 
+<<<<<<< HEAD
 class Profile(User):
     """
     User Profile
     Manages a user profile
     """
 
-    pass
 
-
+=======
+>>>>>>> parent of 6a2defe (Notes on User Model)
 class UserActivity(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     activity_type = models.CharField(max_length=50)
     description = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    def log(self):
+        pass
 
     class Meta:
         ordering = ["-timestamp"]
