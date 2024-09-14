@@ -56,16 +56,6 @@ class User(AbstractBaseUser):
         return self.email
 
 
-<<<<<<< HEAD
-class Profile(User):
-    """
-    User Profile
-    Manages a user profile
-    """
-
-
-=======
->>>>>>> parent of 6a2defe (Notes on User Model)
 class UserActivity(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     activity_type = models.CharField(max_length=50)
