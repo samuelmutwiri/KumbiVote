@@ -97,6 +97,7 @@ class UserProfile(models.Model):
     phone_no = models.CharField(max_length=20, blank=True, unique=True)
     dob = models.DateField(null=True, blank=True)
     blockchain_id = models.CharField(max_length=100, blank=True)
+    profile_photo = models.CharField(max_length=225, blank=True, null=True)
     oauth_provider = models.CharField(choices=OAUTH_PROVIDERS, blank=False)
 
     def __str__(self):

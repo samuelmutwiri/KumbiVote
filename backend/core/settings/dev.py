@@ -47,12 +47,10 @@ INSTALLED_APPS = [
     "oauth2_provider",
     # Internal
     "apps.elections",
-    "apps.orgs",
+    "apps.organizations",
     "apps.register",
     "apps.users",
     "apps.voters",
-    # Configs
-    # "apps.users.UsersConfig",
 ]
 
 MIDDLEWARE = [

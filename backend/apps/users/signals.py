@@ -3,7 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
 
-from .models import CustomUser, UserActivity
+from .models import ActivityLog, User, UserProfile  # noqa: F401
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
@@ -17,11 +17,11 @@ def save_user_profile(sender, instance, **kwargs):
     instance.userprofile.save()
 
 
-@receiver(post_save, sender=CustomUser)
+@receiver(post_save, sender=User)
 def log_user_creation(sender, instance, created, **kwargs):
     if created:
         # Log user creation
-        UserActivity.objects.create(
+        ActivityLog.objects.create(
             user=instance,
             url="/register/",
             action="User Registered",
@@ -29,13 +29,12 @@ def log_user_creation(sender, instance, created, **kwargs):
         )
 
 
-@receiver(post_save, sender=CustomUser)
+@receiver(post_save, sender=User)
 def log_user_update(sender, instance, **kwargs):
     # Log user updates
-    UserActivity.objects.create(
+    ActivityLog.objects.create(
         user=instance,
         url="/profile/",
         action="User Updated Profile",
         timestamp=timezone.now(),
     )
-
