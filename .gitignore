@@ -10,3 +10,4 @@ old/
 bun.*
 .ruff_cache/
 .states/
+pyproject.toml

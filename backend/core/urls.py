@@ -16,8 +16,15 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+
+from apps.users.oauth2_views import TokenView  # noqa
+from apps.users.oauth2_views import RevokeTokenView, UserInfoView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("o/", include("oauth2_provider.urls", namespace="oauth2_provider")),
+    path("oauth2/userinfo", UserInfoView.as_view(), name="oauth2_userinfo"),
+    path("oauth2/token", TokenView.as_view(), name="oauth2_token"),
+    path("oauth2/revoke_token/", RevokeTokenView.as_view(), name="oauth2_revoke_token"),
 ]

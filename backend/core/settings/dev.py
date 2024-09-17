@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
+import psycopg2.extensions
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -42,7 +43,7 @@ INSTALLED_APPS = [
     # Third Party
     "rest_framework",
     "rest_framework_simplejwt",
-    # "corheaders",
+    "corsheaders",
     "oauth2_provider",
     # Internal
     "apps.elections",
@@ -50,6 +51,8 @@ INSTALLED_APPS = [
     "apps.register",
     "apps.users",
     "apps.voters",
+    # Configs
+    # "apps.users.UsersConfig",
 ]
 
 MIDDLEWARE = [
@@ -63,6 +66,8 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
 ]
 
+AUTH_USER_MODEL = "users.User"
+
 ROOT_URLCONF = "core.urls"
 
 AUTHENTICATION_BACKENDS = (
@@ -71,9 +76,9 @@ AUTHENTICATION_BACKENDS = (
 )
 
 OAUTH2_PROVIDER = {
-    "ACCESS_TOKEN_EXPIRE_SECONDS": 36000,  # Token expiration time in seconds
+    "ACCESS_TOKEN_EXPIRE_SECONDS": 3600,  # Token expiration time in seconds
     "AUTHORIZATION_CODE_EXPIRE_SECONDS": 3600,
-    "REFRESH_TOKEN_EXPIRE_SECONDS": 36000,
+    "REFRESH_TOKEN_EXPIRE_SECONDS": 86400,
     "SCOPES": {"read": "Read Scope", "write": "Write Scope"},
 }
 
@@ -114,6 +119,10 @@ DATABASES = {
         "PASSWORD": config("DB_PASS"),
         "HOST": config("DB_HOST"),
         "PORT": config("DB_PORT"),
+        "OPTIONS": {
+            "client_encoding": "UTF-8",
+            "isolation_level": psycopg2.extensions.ISOLATION_LEVEL_SERIALIZABLE,
+        },
     }
 }
 
@@ -139,15 +148,20 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
+USE_TZ = True
+
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Africa/Nairobi"
 
 USE_I18N = True
 
-USE_TZ = True
-
-
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = "DENY"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
