@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "apps.register",
     "apps.users",
     "apps.voters",
+    "apps.share",
 ]
 
 MIDDLEWARE = [

@@ -3,6 +3,13 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+class OrganizationType(models.Model):
+    """ Type of organization."""
+
+    name = models.CharField(blank=False, null=False)
+    is_active = models.BooleanField(default=True)
+
+
 
 class Organization(models.Model):
     """
@@ -10,6 +17,10 @@ class Organization(models.Model):
     """
 
     name = models.CharField(max_length=255)
+    org_type = models.ForeignKey(
+        OrganizationType,
+        on_delete=models.CASCADE
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
 
@@ -24,13 +35,7 @@ class OrganizationalProfile(Organization):
     description = models.TextField(blank=True, null=True)
 
 
-class OrganizationType(models.Model):
-    name = models.CharField(blank=False, null=False)
-    is_active = models.BooleanField(default=True)
-
-
-class OrganizationalUnit(models.Model):
-    name = models.CharField(max_length=255)
+class OrganizationalUnit(models.Model): name = models.CharField(max_length=255)
     organization = models.ForeignKey(
         Organization, on_delete=models.CASCADE, related_name="units"
     )
