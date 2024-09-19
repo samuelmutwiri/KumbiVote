@@ -3,7 +3,7 @@ import Image from "next/image";
 const Step = () => {
   return (
     <div className=" py-12 flex justify-center mx-auto   md:px-24 lg:px-8 lg:py-20 bg-white/30 backdrop-blur-sm border-[0.5px] px-12 rounded-md">
-      <di v>
+      <div>
         <h2 className="flex justify-center w-full mb-12 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
           Steps
         </h2>
@@ -199,7 +199,7 @@ const Step = () => {
             </div>
           </div>
         </div>
-      </di>
+      </div>
     </div>
   );
 };
