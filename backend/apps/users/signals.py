@@ -23,7 +23,7 @@ def log_user_creation(sender, instance, created, **kwargs):
         # Log user creation
         ActivityLog.objects.create(
             user=instance,
-            url="/register/",
+            url="/users/register/",
             action="User Registered",
             timestamp=timezone.now(),
         )
@@ -34,7 +34,7 @@ def log_user_update(sender, instance, **kwargs):
     # Log user updates
     ActivityLog.objects.create(
         user=instance,
-        url="/profile/",
+        url="/users/profile/",
         action="User Updated Profile",
         timestamp=timezone.now(),
     )

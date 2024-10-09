@@ -42,7 +42,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, blank=False, null=False)
     first_name = models.CharField(max_length=30, blank=False, null=False)
     middle_name = models.CharField(max_length=30, blank=True)
-    surname = models.CharField(max_length=30, blank=True, null=False)
+    surname = models.CharField(max_length=30, blank=True, null=False
+    phone_no = models.CharField(max_length=20, blank=True, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
@@ -90,16 +91,14 @@ class UserProfile(models.Model):
         ("NONE", "None"),
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    gender = models.CharField(choices=GENDER, blank=False)
+    gender = models.CharField(choices=GENDER, blank=True, null=True)
     id_type = models.CharField(choices=ID_TYPE, blank=False)
     document_id = models.CharField(max_length=50, blank=True, unique=True)
     document_expiry_date = models.DateField(null=True, blank=True)
-    phone_no = models.CharField(max_length=20, blank=True, unique=True)
     dob = models.DateField(null=True, blank=True)
     blockchain_id = models.CharField(max_length=100, blank=True)
     profile_photo = models.CharField(max_length=225, blank=True, null=True)
-    oauth_provider = models.CharField(choices=OAUTH_PROVIDERS, blank=True,
-                                      null=True)
+    oauth_provider = models.CharField(choices=OAUTH_PROVIDERS, blank=True, null=True)
 
     def __str__(self):
         return self.user.email
