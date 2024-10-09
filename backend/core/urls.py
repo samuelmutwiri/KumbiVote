@@ -20,12 +20,9 @@ from django.urls import include, path
 
 from apps.users.oauth2_views import TokenView  # noqa
 from apps.users.oauth2_views import RevokeTokenView, UserInfoView
-from core.routing import websocket_urlpatterns
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("users/", apps.users.urls),
-    path("ws/", websocket_urlpatterns),
     path("o/", include("oauth2_provider.urls", namespace="oauth2_provider")),
     path("oauth2/userinfo", UserInfoView.as_view(), name="oauth2_userinfo"),
     path("oauth2/token", TokenView.as_view(), name="oauth2_token"),

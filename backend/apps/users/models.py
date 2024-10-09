@@ -1,7 +1,10 @@
 import uuid
 
-from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
-                                        PermissionsMixin)
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
+)
 from django.db import models
 
 
@@ -42,7 +45,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, blank=False, null=False)
     first_name = models.CharField(max_length=30, blank=False, null=False)
     middle_name = models.CharField(max_length=30, blank=True)
-    surname = models.CharField(max_length=30, blank=True, null=False
+    surname = models.CharField(max_length=30, blank=True, null=False)
     phone_no = models.CharField(max_length=20, blank=True, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -63,6 +66,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         ordering = ["-created_at"]
         indexes = [
             models.Index(fields=["uuid"], name="uuidx"),
+            models.Index(fields=["phone_no"], name="phonex"),
             models.Index(fields=["email"], name="emailx"),
             models.Index(fields=["created_at"], name="timex"),
         ]
@@ -90,7 +94,7 @@ class UserProfile(models.Model):
         ("APPLE", "Apple"),
         ("NONE", "None"),
     ]
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, default=0)
     gender = models.CharField(choices=GENDER, blank=True, null=True)
     id_type = models.CharField(choices=ID_TYPE, blank=False)
     document_id = models.CharField(max_length=50, blank=True, unique=True)
@@ -109,7 +113,6 @@ class UserProfile(models.Model):
             models.Index(fields=["gender"], name="genderx"),
             models.Index(fields=["dob"], name="dobx"),
             models.Index(fields=["blockchain_id"], name="blockidx"),
-            models.Index(fields=["phone_no"], name="phonex"),
         ]
         verbose_name = "profile"
         verbose_name_plural = "profiles"
@@ -120,7 +123,9 @@ class ActivityLog(models.Model):
     Log Activities
     """
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, default=0, blank=True, null=True
+    )
     session = models.CharField(max_length=225, blank=False, null=False)
     resource = models.CharField(max_length=225, blank=False, null=False)
     action = models.CharField(max_length=225, blank=False, null=False)

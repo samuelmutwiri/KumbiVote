@@ -1,12 +1,12 @@
 from django.db import models
 from django.db.models import Count
 
-from apps.organizations import Member, Position
+from apps.organizations.models import Body, Member, Organization
 
 
 class Election(models.Model):
     organization = models.ForeignKey(
-        apps.organizations.Organization,
+        Organization,
         on_delete=models.CASCADE,
         related_name="%(class)s",
     )
@@ -18,17 +18,16 @@ class Election(models.Model):
     is_active = models.BooleanField(default=True)
 
 
-class Poll(Election):
+class Poll(models.Model):
+    election = models.ForeignKey(Election, on_delete=models.CASCADE)
     body = models.ForeignKey(Body, on_delete=models.CASCADE, related_name="%(class)s")
-    position = models.ForeignKey(
-        Position, on_delete=models.CASCADE, related_name="%(class)s"
-    )
+    position_id = models.IntegerField()
+    position = models.CharField(max_length=255)
 
 
-class Candidate(Poll):
-    member = models.ForeignKey(
-        Member, on_delete=models.CASCADE, related_name="%(class)s"
-    )
+class Candidate(models.Model):
+    poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
+    member = models.IntegerField(default=0)
     name = models.CharField(blank=False, null=False)
     created = models.DateTimeField(auto_now_add=True)
     bio = models.TextField(blank=True, null=False)
@@ -39,7 +38,8 @@ class Candidate(Poll):
         return self.name
 
 
-class Ballot(Poll):
+class Ballot(models.Model):
+    poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
     candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)

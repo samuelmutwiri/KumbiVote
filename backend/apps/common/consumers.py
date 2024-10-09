@@ -1,7 +1,6 @@
 import logging
 import os
 
-from asgiref.sync import sync_to_async
 from channels.generic.websocket import JsonWebsocketConsumer
 from rest_framework.test import APIRequestFactory
 
@@ -52,14 +51,14 @@ class GlobalConsumer(JsonWebsocketConsumer):
         if action == "GET":
             request = factory.get("/")
             viewset = viewset_class.as_view({"get": "list"})
-            response = await sync_to_async(viewset(request))
+            response = viewset(request)
             self.send_json(response.data)
             logger.info(f"GET request for {viewset_class.__name__}")
 
         elif action == "POST":
             request = factory.post("/", data)
             viewset = viewset_class.as_view({"post": "create"})
-            response = await sync_to_async(viewset(request))
+            response = viewset(request)
             self.send_json(response.data)
             logger.info(f"POST request for {viewset_class.__name__}")
 
@@ -67,7 +66,7 @@ class GlobalConsumer(JsonWebsocketConsumer):
             object_id = data.get("id")
             request = factory.put(f"/{object_id}/", data)
             viewset = viewset_class.as_view({"put": "update"})
-            response = await sync_to_async(viewset(request, pk=object_id))
+            response = viewset(request, pk=object_id)
             self.send_json(response.data)
             logger.info(
                 f"PUT request for {viewset_class.__name__} on object ID {object_id}"
@@ -77,7 +76,7 @@ class GlobalConsumer(JsonWebsocketConsumer):
             object_id = data.get("id")
             request = factory.delete(f"/{object_id}/")
             viewset = viewset_class.as_view({"delete": "destroy"})
-            response = await sync_to_async(viewsetrequest, pk=object_id)
+            response = viewset(request, pk=object_id)
             self.send_json({"message": f"Deleted {object_id}"})
             logger.info(
                 f"DELETE request for {viewset_class.__name__} on object ID {object_id}"

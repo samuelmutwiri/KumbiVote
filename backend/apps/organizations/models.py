@@ -1,9 +1,4 @@
-from django.contrib.auth import get_user_model
 from django.db import models
-
-from apps.elections import Polls
-
-User = get_user_model()
 
 
 class OrganizationType(models.Model):
@@ -31,8 +26,9 @@ class Organization(models.Model):
         return self.name
 
 
-class OrganizationalUnit(Organization):
+class OrganizationalUnit(models.Model):
     name = models.CharField(max_length=255)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     parent_id = models.OneToOneField(
         "self",
         on_delete=models.SET_NULL,
@@ -45,9 +41,10 @@ class OrganizationalUnit(Organization):
         return f"{self.name}"
 
 
-class Branch(Organization):
+class Branch(models.Model):
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    unit = models.ForeignKey(
+    ou = models.ForeignKey(
         OrganizationalUnit, on_delete=models.CASCADE, related_name="%(class)s"
     )
 
@@ -55,27 +52,32 @@ class Branch(Organization):
         return f"{self.name} - {self.unit.name}"
 
 
-class Body(Organization):
+class Body(models.Model):
     LEVELS = {
         "organization": "Organization",
         "unit": "Organizational Unit",
         "branch": "Branch",
     }
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    unit = models.ForeignKey(OrganizationalUnit, on_delete=models.CASCADE, null=True)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=255)
     level = models.CharField(choices=LEVELS)
     is_active = models.BooleanField(default=True)
 
 
-class Term(Body):
-    poll = models.ForeignKey(Polls, on_delete=models.RESTRICT)
-    cycle = models.IntegerField(default=12)
+class Term(models.Model):
+    body = models.ForeignKey(Body, on_delete=models.CASCADE)
+    poll = models.IntegerField(default=0, null=True, blank=True)
+    cycle = models.DurationField()
     starts = models.DateField()
     lapses = models.DateField()
     assumption = models.DateField()
     is_active = models.BooleanField(default=False)
 
 
-class Position(Body):
+class Position(models.Model):
+    body = models.ForeignKey(Body, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
 
@@ -83,7 +85,7 @@ class Position(Body):
         return f"{self.name}"
 
 
-class Member(User):
+class Member(models.Model):
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
@@ -103,12 +105,10 @@ class Member(User):
     joined = models.DateField()
     created = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"{self.username}"
 
-
-class Incumbent(Position):
-    member = models.ForeignKey(Member, on_delete=models.RESTRICT)
+class Incumbent(models.Model):
+    position = models.ForeignKey(Position, on_delete=models.CASCADE)
+    member = models.IntegerField(default=0)
     term = models.ForeignKey(Term, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     cycle = models.IntegerField(default=1)

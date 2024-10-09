@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     "oauth2_provider",
     "channels",
     "channels_redis",
-    "social_django",
+    #    "social_django",
     # Internal
     "apps.elections",
     "apps.organizations",
@@ -103,8 +103,8 @@ CHANNEL_LAYERS = {
     },
 }
 
-PRIVATE_KEY = open("/etc/ssl/private/KumbiTracePrivateKey.pem").read()
-PUBLIC_KEY = open("/etc/ssl/certs/KumbiTracePublicKey.pem").read()
+# PRIVATE_KEY = open(config(SECRET_KEY)).read()
+# PUBLIC_KEY = open(config(PUBLIC_KEY)).read()
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (

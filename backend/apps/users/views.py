@@ -26,39 +26,53 @@ def login_view(request):
 
 @csrf_exempt
 def register_view(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         # Get data from request
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        email = request.POST.get('email')
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        email = request.POST.get("email")
 
         # Validate required fields
         if not username or not password or not email:
-            return JsonResponse({'error': 'Please provide all required fields.'}, status=400)
+            return JsonResponse(
+                {"error": "Please provide all required fields."}, status=400
+            )
 
         # Check if the username already exists
         if User.objects.filter(username=username).exists():
-            return JsonResponse({'error': 'Username already taken.'}, status=400)
+            return JsonResponse({"error": "Username already taken."}, status=400)
 
         # Create new user
         try:
-            user = User.objects.create_user(username=username, password=password, email=email)
+            user = User.objects.create_user(
+                username=username, password=password, email=email
+            )
             user.save()
 
             # Automatically log in the user after registration
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return JsonResponse({'message': 'User registered and logged in successfully', 'csrf_token': get_token(request)}, status=201)
+                return JsonResponse(
+                    {
+                        "message": "User registered and logged in successfully",
+                        "csrf_token": get_token(request),
+                    },
+                    status=201,
+                )
             else:
-                return JsonResponse({'error': 'Error authenticating the user.'}, status=500)
+                return JsonResponse(
+                    {"error": "Error authenticating the user."}, status=500
+                )
 
         except ValidationError as e:
-            return JsonResponse({'error': str(e)}, status=400)
+            return JsonResponse({"error": str(e)}, status=400)
         except Exception:
-            return JsonResponse({'error': 'An error occurred while creating the user.'}, status=500)
+            return JsonResponse(
+                {"error": "An error occurred while creating the user."}, status=500
+            )
 
-    return JsonResponse({'error': 'Invalid request method'}, status=400)
+    return JsonResponse({"error": "Invalid request method"}, status=400)
 
 
 @login_required
