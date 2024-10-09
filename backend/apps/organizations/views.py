@@ -1,7 +1,9 @@
 from rest_framework import viewsets
 
-from .models import Branch, Member, Organization, OrganizationalUnit, Position
-from .serializers import (BranchSerializer, MemberSerializer,
+from .models import (Body, Branch, Incumbent, Member, Organization,
+                     OrganizationalUnit, Position)
+from .serializers import (BodySerializer, BranchSerializer,
+                          IncumbentSerializer, MemberSerializer,
                           OrganizationalUnitSerializer, OrganizationSerializer,
                           PositionSerializer)
 
@@ -29,3 +31,13 @@ class PositionViewSet(viewsets.ModelViewSet):
 class MemberViewSet(viewsets.ModelViewSet):
     queryset = Member.objects.all()
     serializer_class = MemberSerializer
+
+
+class BodyViewSet(viewsets.ModelViewSet):
+    queryset = Body.objects.all()
+    serializer_class = BodySerializer
+
+
+class IncumbentViewSet(viewsets.ModelViewSet):
+    queryset = Incumbent.objects.all()
+    serializer_class = IncumbentSerializer

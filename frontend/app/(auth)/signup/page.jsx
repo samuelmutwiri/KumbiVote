@@ -1,9 +1,61 @@
 "use client";
 
-import React from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import SuccessMessage from '../components/SuccessMessage'
+import ErrorMessage from '../components/ErrorMessage'
 
 const Signup = () => {
+  const [first_name, setFirstName] = useState('');
+  const [surname, setSurname] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirm_password, setConfirmPassword] = useState('');
+  const [phone_no, setPhoneNo] = useState('');
+  const [email, setEmail] = useState('');
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+    setError();
+    setSuccess('');
+
+    if (password !== confirm_password) {
+      setError("Password and confirmation do not match!");
+      return;
+    }
+
+    const response = await fetch('http://localhost:8000/users/register/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        first_name,
+        surname,
+        password,
+        confirm_password,
+        phone_no,
+        email,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      //Handle Errors
+      setError(data.detail || "Registration Failed!");
+    } else {
+      setSuccess("Sign Up Successfull.")
+      //Reset form
+      setFirstName('');
+      setSurname('');
+      setPassword('');
+      setConfirmPassword('');
+      setEmail('');
+      setPhoneNo('');
+    }
+  };
+
   return (
     <div className="py-4 md:py-8 ">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
@@ -16,6 +68,10 @@ const Signup = () => {
         </a>
         <div className="w-full bg-white/60  border-[0.5px]  backdrop-blur-sm rounded-lg shadow  md:mt-0 sm:max-w-md xl:p-0 ">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+
+            <ErrorMessage message={error} />
+            <SuccessMessage message={success} />
+
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl ">
               Create your account today
             </h1>
@@ -23,56 +79,64 @@ const Signup = () => {
             <form
               className="space-y-4 md:space-y-6"
               method="POST"
-              action="/auth/signup/"
+              action="/user/register/"
+              onSubmit={handleRegister}
             >
               <div className="flex flex-wrap gap-2">
                 <div className="flex-1">
                   <label
-                    htmlFor="firstName"
+                    htmlFor="first_name"
                     className="block mb-2 text-sm font-medium text-gray-900 "
                   >
                     First name
                   </label>
                   <input
                     type="text"
-                    name="firstName"
-                    id="firstName"
+                    name="first_name"
+                    id="first_name"
                     className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full p-2.5 "
                     placeholder="John"
-                    required=""
+                    required
+                    value={first_name}
+                    onChange={(e) => setFirstName(e.target.value)}
+
                   />
                 </div>
                 <div className="flex-1">
                   <label
-                    htmlFor="secondName"
+                    htmlFor="surname"
                     className="block mb-2 text-sm font-medium text-gray-900 "
                   >
                     Last name
                   </label>
                   <input
                     type="text"
-                    name="secondName"
-                    id="secondName"
+                    name="surame"
+                    id="surname"
                     className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full p-2.5 "
                     placeholder="Doe"
-                    required=""
+                    required
+                    value={surname}
+                    onChange={(e) => setSurname(e.target.value)}
                   />
                 </div>
               </div>
               <div>
                 <label
-                  htmlFor="phone"
+                  htmlFor="phone_no"
                   className="block mb-2 text-sm font-medium text-gray-900 "
                 >
                   Your phone number
                 </label>
                 <input
                   type="phone"
-                  name="phone"
-                  id="phone"
+                  name="phone_no"
+                  id="phone_no"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full p-2.5 "
                   placeholder="254 712 345 678"
-                  required=""
+                  value={phone_no}
+                  onChange={(e) => setPhoneNo(e.target.value)}
+                  required
                 />
               </div>
               <div>
@@ -84,11 +148,14 @@ const Signup = () => {
                 </label>
                 <input
                   type="email"
-                  name="login"
+                  name="email"
                   id="email"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full p-2.5 "
                   placeholder="name@company.com"
-                  required=""
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+
                 />
               </div>
               <div>
@@ -104,32 +171,37 @@ const Signup = () => {
                   id="password"
                   placeholder="••••••••"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full p-2.5 "
-                  required=""
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+
                 />
               </div>
               <div>
                 <label
-                  htmlFor="password"
+                  htmlFor="confirm_password"
                   className="block mb-2 text-sm font-medium text-gray-900 "
                 >
                   Confirm Password
                 </label>
                 <input
                   type="password"
-                  name="password"
-                  id="password"
+                  name="confirm_password"
+                  id="confirm_password"
                   placeholder="••••••••"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full p-2.5 "
-                  required=""
+                  value={confirm_password}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
                 />
               </div>
 
               <button
                 type="submit"
-                onClick={() => {}} //TODO:Change to the correct function
+//                onClick={() => {}} //TODO:Change to the correct function
                 className="text-white bg-blue-600 py-1.5 px-4 rounded font-bold w-full"
               >
-                Sign in
+                Sign Up!
               </button>
             </form>
 
@@ -139,7 +211,7 @@ const Signup = () => {
               <div className="w-full h-0.5 bg-gray-200 "></div>
             </div>
 
-            <form id="connect-google-button" method="post" action="">
+            <!--form id="connect-google-button" method="post" action="">
               <button
                 className="w-full inline-flex items-center justify-center py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:ring-4 focus:ring-gray-200  "
                 type="submit"
@@ -181,11 +253,11 @@ const Signup = () => {
                 </svg>
                 Sign up with Google
               </button>
-            </form>
+            </form-->
             <p className="text-sm font-light text-gray-500 ">
               You have an account already?{" "}
               <a
-                href="/signin"
+                href="/login"
                 className="font-medium text-blue-600 hover:underline "
               >
                 Sign in

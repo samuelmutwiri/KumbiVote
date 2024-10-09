@@ -41,17 +41,21 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Third Party
+    # TODO: Remove rest_framework & rest_framework_simplejwt.
     "rest_framework",
     "rest_framework_simplejwt",
     "corsheaders",
     "oauth2_provider",
+    "channels",
+    "channels_redis",
+    "social_django",
     # Internal
     "apps.elections",
     "apps.organizations",
     "apps.register",
     "apps.users",
     "apps.voters",
-    "apps.share",
+    "apps.common",
 ]
 
 MIDDLEWARE = [
@@ -63,6 +67,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "core.middleware.PublicKeyVerificationMiddleware",
 ]
 
 AUTH_USER_MODEL = "users.User"
@@ -71,8 +76,12 @@ ROOT_URLCONF = "core.urls"
 
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
+    "django.core.backends.google.GoogleOAuth2",
     "oauth2_provider.backends.OAuth2Backend",
 )
+
+GOOGLE_API_KEY = ""
+GOOGLE_API_SECRET = ""
 
 OAUTH2_PROVIDER = {
     "ACCESS_TOKEN_EXPIRE_SECONDS": 3600,  # Token expiration time in seconds
@@ -82,6 +91,20 @@ OAUTH2_PROVIDER = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+ASGI_APPLICATION = "core.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
+
+PRIVATE_KEY = open("/etc/ssl/private/KumbiTracePrivateKey.pem").read()
+PUBLIC_KEY = open("/etc/ssl/certs/KumbiTracePublicKey.pem").read()
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -106,7 +129,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "core.wsgi.application"
-
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -143,7 +165,24 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": "websocket.log",
+        },
+    },
+    "loggers": {
+        "": {
+            "handlers": ["file"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+    },
+}
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 

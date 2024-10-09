@@ -1,9 +1,46 @@
 "use client";
 
-import React from "react";
-import Image from "next/image";
+import React, { useState, useEffect } from 'react';
+import { useWebSocket } from '../globalWSManager';
 
-const Signin = () => {
+const Signin() {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const { isConnected, send, addListener } = useWebSocket('wss://localhost/ws/global/login');
+
+  useEffect(() => {
+    const removeListener = addListener('query_results', (data) => {
+      setResults(data.results);
+    });
+
+    return removeListener;
+  }, [addListener]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (query.trim()) {
+      // Send query via WebSocket
+      send({ type: 'query', data: query });
+
+      // Also send query via REST API
+      try {
+        const response = await fetch('/api/yourmodel/query/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ query }),
+        });
+        const data = await response.json();
+        setResults(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+
+      setQuery('');
+    }
+  };
+
   return (
     <div className="py-4 md:py-8 ">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">

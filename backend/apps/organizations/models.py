@@ -1,14 +1,16 @@
-from django.db import models
 from django.contrib.auth import get_user_model
+from django.db import models
+
+from apps.elections import Polls
 
 User = get_user_model()
 
+
 class OrganizationType(models.Model):
-    """ Type of organization."""
+    """Type of organization."""
 
     name = models.CharField(blank=False, null=False)
     is_active = models.BooleanField(default=True)
-
 
 
 class Organization(models.Model):
@@ -17,10 +19,11 @@ class Organization(models.Model):
     """
 
     name = models.CharField(max_length=255)
-    org_type = models.ForeignKey(
-        OrganizationType,
-        on_delete=models.CASCADE
-    )
+    org_type = models.ForeignKey(OrganizationType, on_delete=models.CASCADE)
+    block_addr = models.CharField(max_length=255)
+    country_id = models.IntegerField()
+    hq_addr = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
 
@@ -28,63 +31,85 @@ class Organization(models.Model):
         return self.name
 
 
-class OrganizationalProfile(Organization):
-    block_addr = models.CharField(max_length=255)
-    country_id = models.IntegerField()
-    hq_addr = models.IntegerField()
-    description = models.TextField(blank=True, null=True)
-
-
-class OrganizationalUnit(models.Model): name = models.CharField(max_length=255)
-    organization = models.ForeignKey(
-        Organization, on_delete=models.CASCADE, related_name="units"
-    )
-    parent_unit = models.ForeignKey(
+class OrganizationalUnit(Organization):
+    name = models.CharField(max_length=255)
+    parent_id = models.OneToOneField(
         "self",
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
-        related_name="subunits",
+        related_name="%(class)s_parent",
     )
 
     def __str__(self):
-        return f"{self.name} - {self.organization.name}"
+        return f"{self.name}"
 
 
-class Branch(models.Model):
+class Branch(Organization):
     name = models.CharField(max_length=255)
     unit = models.ForeignKey(
-        OrganizationalUnit, on_delete=models.CASCADE, related_name="branches"
+        OrganizationalUnit, on_delete=models.CASCADE, related_name="%(class)s"
     )
 
     def __str__(self):
         return f"{self.name} - {self.unit.name}"
 
 
-class Position(models.Model):
+class Body(Organization):
+    LEVELS = {
+        "organization": "Organization",
+        "unit": "Organizational Unit",
+        "branch": "Branch",
+    }
+    name = models.CharField(max_length=255)
+    level = models.CharField(choices=LEVELS)
+    is_active = models.BooleanField(default=True)
+
+
+class Term(Body):
+    poll = models.ForeignKey(Polls, on_delete=models.RESTRICT)
+    cycle = models.IntegerField(default=12)
+    starts = models.DateField()
+    lapses = models.DateField()
+    assumption = models.DateField()
+    is_active = models.BooleanField(default=False)
+
+
+class Position(Body):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
-    branch = models.ForeignKey(
-        Branch, on_delete=models.CASCADE, related_name="positions"
-    )
 
     def __str__(self):
-        return f"{self.name} - {self.branch.name}"
+        return f"{self.name}"
 
 
-class Member(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+class Member(User):
     organization = models.ForeignKey(
-        Organization, on_delete=models.CASCADE, related_name="members"
+        Organization,
+        on_delete=models.CASCADE,
+        related_name="%(class)s",
+        blank=False,
+        null=False,
     )
-    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, related_name="members")
-    position = models.ForeignKey(
-        Position,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="members",
+    unit = models.ForeignKey(
+        OrganizationalUnit,
+        on_delete=models.CASCADE,
+        related_name="%(class)s",
+        default=0,
     )
+    branch = models.ForeignKey(
+        Branch, on_delete=models.CASCADE, related_name="%(class)s", default=0
+    )
+    joined = models.DateField()
+    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user.username} - {self.branch.name} - {self.position.name if self.position else 'No position'}"
+        return f"{self.username}"
+
+
+class Incumbent(Position):
+    member = models.ForeignKey(Member, on_delete=models.RESTRICT)
+    term = models.ForeignKey(Term, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    cycle = models.IntegerField(default=1)
+    is_active = models.BooleanField(default=True)
