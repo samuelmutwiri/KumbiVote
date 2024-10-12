@@ -44,23 +44,32 @@ class User(AbstractBaseUser, PermissionsMixin):
         "APPLE": "Apple",
         "NONE": "None",
     }
-
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True, blank=False, null=False)
     first_name = models.CharField(max_length=30, blank=False, null=False)
-    middle_name = models.CharField(max_length=30, blank=True)
-    surname = models.CharField(max_length=30, blank=True, null=False)
-    phone_no = models.CharField(max_length=20, blank=True, unique=True)
+    middle_name = models.CharField(max_length=30, blank=True, null=True)
+    last_name = models.CharField(max_length=30, blank=True, null=False)
+    phone_no = models.CharField(
+        max_length=20, blank=True, unique=True, null=True
+    )
     created = models.DateTimeField(auto_now_add=True)
-    gender = models.CharField(choices=GENDER, blank=True, null=True)
-    id_type = models.CharField(choices=ID_TYPE, blank=False)
+    gender = models.CharField(
+        choices=GENDER, blank=True, default=None, null=True
+    )
+    id_type = models.CharField(choices=ID_TYPE, blank=False, default="IDCARD")
     document_id = models.CharField(max_length=50, blank=True, unique=True)
-    document_expiry_date = models.DateField(null=True, blank=True)
-    dob = models.DateField(null=True, blank=True)
-    blockchain_id = models.CharField(max_length=100, blank=True)
-    profile_photo = models.CharField(max_length=225, blank=True, null=True)
+    document_expiry_date = models.DateField(
+        default=None, blank=True, null=True
+    )
+    dob = models.DateField(default=None, blank=True, null=True)
+    blockchain_id = models.CharField(
+        max_length=100, blank=True, default=None, null=True
+    )
+    profile_photo = models.CharField(
+        max_length=225, blank=True, default=None, null=True
+    )
     oauth_provider = models.CharField(
-        choices=OAUTH_PROVIDERS, blank=True, null=True
+        choices=OAUTH_PROVIDERS, blank=True, default=None, null=True
     )
     updated = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
@@ -70,18 +79,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["first_name", "surname"]
+    REQUIRED_FIELDS = ["first_name", "last_name"]
 
     def __str__(self):
         return self.email
 
     class Meta:
         default_related_name = "%(app_label)s_%(model_name)s"
-        ordering = ["-created_at"]
+        ordering = ["-created"]
         indexes = [
             models.Index(fields=["uuid"], name="uuidx"),
             models.Index(
-                fields=["first_name", "middle_name", "surname"], name="namex"
+                fields=["first_name", "middle_name", "last_name"], name="namex"
             ),
             models.Index(fields=["phone_no"], name="phonex"),
             models.Index(fields=["email"], name="emailx"),
@@ -90,6 +99,6 @@ class User(AbstractBaseUser, PermissionsMixin):
             models.Index(fields=["dob"], name="dobx"),
             models.Index(fields=["blockchain_id"], name="blockidx"),
         ]
-        unique_together = ["first_name", "surname", "email"]
+        unique_together = ["first_name", "last_name", "email"]
         verbose_name = "user"
         verbose_name_plural = "users"

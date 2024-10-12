@@ -21,18 +21,18 @@ def log_superuser_creation(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=User)
 def log_superuser_password_change(sender, instance, created, **kwargs):
-    if instance.is_superuser and "password" in instance.get_dirty_fields():
+    if instance.is_superuser and "password" in instance.get_deferred_fields():
         logger.info("Superuser %s changed password", instance.email)
 
 
 @receiver(user_logged_in)
-def log_login(sender, instance, request, **kwargs):
-    logger.info("User %s logged in", instance.email)
+def log_login(sender, request, user, **kwargs):
+    logger.info("User %s logged in", user.email)
 
 
 @receiver(user_logged_out)
-def log_logout(sender, instance, request, **kwargs):
-    logger.info("User %s logged out", instance.email)
+def log_logout(sender, request, user, **kwargs):
+    logger.info("User %s logged out", user.email)
 
 
 @receiver(user_login_failed)

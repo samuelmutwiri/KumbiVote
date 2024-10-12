@@ -6,9 +6,10 @@ from .models import User
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = (
-        "get_gender",
+        "gender",
         "full_name",
         "email",
+        "phone_no",
         "is_staff",
         "is_active",
         "is_superuser",
@@ -35,6 +36,6 @@ class UserAdmin(admin.ModelAdmin):
     ordering = ("-created", "is_staff", "is_superuser", "is_active")
 
     def full_name(self, obj):
-        return f"{obj.first_name} {obj.surname}"
+        return f"{obj.first_name} {obj.last_name}"
 
     full_name.short_description = "Name"

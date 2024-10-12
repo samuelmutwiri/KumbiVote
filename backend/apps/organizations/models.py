@@ -18,7 +18,7 @@ class Organization(models.Model):
     block_addr = models.CharField(max_length=255)
     country_id = models.IntegerField()
     hq_addr = models.CharField(max_length=255)
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
 
@@ -29,12 +29,10 @@ class Organization(models.Model):
 class OrganizationalUnit(models.Model):
     name = models.CharField(max_length=255)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
-    parent_id = models.OneToOneField(
+    parent_id = models.ForeignKey(
         "self",
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True,
-        related_name="%(class)s_parent",
+        on_delete=models.CASCADE,
+        default=None,
     )
 
     def __str__(self):
@@ -59,15 +57,17 @@ class Body(models.Model):
         "branch": "Branch",
     }
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
-    unit = models.ManyToManyField(OrganizationalUnit, blank=True, null=True)
-    branch = models.ManyToManyField(Branch, blank=True, null=True)
+    unit = models.ForeignKey(
+        OrganizationalUnit, on_delete=models.CASCADE, default=None
+    )
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, default=None)
     name = models.CharField(max_length=255)
     level = models.CharField(choices=LEVELS)
     is_active = models.BooleanField(default=True)
 
 
 class Term(models.Model):
-    body = models.ForeignKey(Body, on_delete=models.CASCADE)
+    body = models.ForeignKey(Body, on_delete=models.CASCADE, default=None)
     cycle = models.DurationField()
     starts = models.DateField()
     lapses = models.DateField()
@@ -76,16 +76,16 @@ class Term(models.Model):
 
 
 class Position(models.Model):
-    body = models.ForeignKey(Body, on_delete=models.CASCADE)
+    body = models.ForeignKey(Body, on_delete=models.CASCADE, default=None)
     name = models.CharField(max_length=255)
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, default=None)
 
     def __str__(self):
         return f"{self.name}"
 
 
 class Member(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
@@ -97,7 +97,7 @@ class Member(models.Model):
         OrganizationalUnit,
         on_delete=models.CASCADE,
         related_name="%(class)s",
-        default=0,
+        default=None,
     )
     branch = models.ForeignKey(
         Branch, on_delete=models.CASCADE, related_name="%(class)s", default=0
@@ -108,7 +108,7 @@ class Member(models.Model):
 
 class Incumbent(models.Model):
     position = models.ForeignKey(Position, on_delete=models.CASCADE)
-    member = models.OneToOneField(Member, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     term = models.ForeignKey(Term, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     cycle = models.IntegerField(default=1)

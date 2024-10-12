@@ -19,20 +19,31 @@ class Election(models.Model):
 
 
 class Poll(models.Model):
-    election = models.ForeignKey(Election, on_delete=models.CASCADE)
+    election = models.ForeignKey(
+        Election,
+        on_delete=models.CASCADE,
+        related_name="%(class)s",
+    )
     body = models.ForeignKey(
         Body,
         on_delete=models.CASCADE,
         related_name="%(class)s",
     )
-
-    position = models.OneToOneField(Position, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
+    position = models.ForeignKey(
+        Position,
+        on_delete=models.CASCADE,
+        related_name="%(class)s",
+    )
+    name = models.CharField(max_length=255, default=None)
 
 
 class Candidate(models.Model):
-    poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
-    voter = models.ForeignKey(Member, on_delete=models.CASCADE)
+    poll = models.ForeignKey(
+        Poll,
+        on_delete=models.CASCADE,
+        related_name="%(class)s",
+    )
+    voter = models.ForeignKey(Member, on_delete=models.CASCADE, default=None)
     name = models.CharField(blank=False, null=False)
     created = models.DateTimeField(auto_now_add=True)
     bio = models.TextField(blank=True, null=False)
@@ -44,22 +55,41 @@ class Candidate(models.Model):
 
 
 class Ballot(models.Model):
-    poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
-    voter = models.ForeignKey(Member, on_delete=models.CASCADE)
-    candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)
+    poll = models.ForeignKey(
+        Poll,
+        on_delete=models.CASCADE,
+        related_name="%(class)s",
+    )
+    voter = models.ForeignKey(
+        Member,
+        on_delete=models.CASCADE,
+        default=None,
+        related_name="%(class)s",
+    )
+    candidate = models.ForeignKey(
+        Candidate, on_delete=models.CASCADE, related_name="%(class)s"
+    )
     timestamp = models.DateTimeField(auto_now_add=True)
 
 
 class Register(models.Model):
-    election = models.ForeignKey(Election, on_delete=models.CASCADE)
-    body = models.ForeignKey(Body, on_delete=models.CASCADE)
-    voter = models.ForeignKey(Member, on_delete=models.CASCADE)
+    election = models.ForeignKey(
+        Election,
+        on_delete=models.CASCADE,
+        related_name="%(class)s",
+    )
+    body = models.ForeignKey(
+        Body,
+        on_delete=models.CASCADE,
+        related_name="%(class)s",
+    )
+    voter = models.ForeignKey(Member, on_delete=models.CASCADE, default=None)
     created = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
 
     class Meta:
         unique_together = ("election", "voter")
-        ordering = "-created"
+        ordering = ["-created", "election", "body"]
 
 
 class Result(models.Model):
@@ -70,7 +100,11 @@ class Result(models.Model):
         on_delete=models.CASCADE,
         related_name="%(class)s",
     )
-    candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)
+    candidate = models.ForeignKey(
+        Candidate,
+        on_delete=models.CASCADE,
+        related_name="%(class)s",
+    )
     votes = models.PositiveBigIntegerField(default=0)
 
     class Meta:
