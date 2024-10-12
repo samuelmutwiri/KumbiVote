@@ -1,9 +1,15 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import (BodyViewSet, BranchViewSet, IncumbentViewSet,
-                    MemberViewSet, OrganizationalUnitViewSet,
-                    OrganizationViewSet, PositionViewSet)
+from .views import (
+    BodyViewSet,
+    BranchViewSet,
+    IncumbentViewSet,
+    MemberViewSet,
+    OrganizationalUnitViewSet,
+    OrganizationViewSet,
+    PositionViewSet,
+)
 
 router = DefaultRouter()
 router.register(r"orgs", OrganizationViewSet)

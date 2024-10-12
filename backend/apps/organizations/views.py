@@ -1,11 +1,23 @@
 from rest_framework import viewsets
 
-from .models import (Body, Branch, Incumbent, Member, Organization,
-                     OrganizationalUnit, Position)
-from .serializers import (BodySerializer, BranchSerializer,
-                          IncumbentSerializer, MemberSerializer,
-                          OrganizationalUnitSerializer, OrganizationSerializer,
-                          PositionSerializer)
+from .models import (
+    Body,
+    Branch,
+    Incumbent,
+    Member,
+    Organization,
+    OrganizationalUnit,
+    Position,
+)
+from .serializers import (
+    BodySerializer,
+    BranchSerializer,
+    IncumbentSerializer,
+    MemberSerializer,
+    OrganizationalUnitSerializer,
+    OrganizationSerializer,
+    PositionSerializer,
+)
 
 
 class OrganizationViewSet(viewsets.ModelViewSet):

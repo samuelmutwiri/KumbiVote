@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 import psycopg2.extensions
@@ -48,11 +49,9 @@ INSTALLED_APPS = [
     "oauth2_provider",
     "channels",
     "channels_redis",
-    #    "social_django",
     # Internal
     "apps.elections",
     "apps.organizations",
-    "apps.register",
     "apps.users",
     "apps.voters",
     "apps.common",
@@ -165,21 +164,133 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "handlers": {
-        "file": {
-            "level": "DEBUG",
-            "class": "logging.FileHandler",
-            "filename": "websocket.log",
+    "formatters": {
+        "verbose": {
+            "format": "{asctime} {levelname} {module} {message}",
+            "style": "{",
         },
-    },
-    "loggers": {
-        "": {
-            "handlers": ["file"],
-            "level": "DEBUG",
-            "propagate": True,
+        "database": {
+            "format": """{asctime} {levelname} {module} {message} {sql} {params} {alias} {duration}""",
+            "style": "{",
+        },
+        "simple": {
+            "simple": {
+                "format": "{asctime} {levelname} {message}",
+                "style": "{",
+            },
+        },
+        "filters": {
+            "require_debug_false": {
+                "()": "django.utils.log.RequireDebugFalse",
+            },
+        },
+        "handlers": {
+            # Output log messages to console
+            "console": {
+                "level": "DEBUG",
+                "class": "logging.StreamHandler",
+                "formatter": "verbose",
+            },
+            # Save logs to a file
+            "file": {
+                "level": "INFO",
+                "class": "logging.FileHandler",
+                "filename": os.path.join(BASE_DIR, "logs/global.log"),
+                "formatter": "verbose",
+            },
+            "security": {
+                "level": "INFO",
+                "class": "logging.FileHandler",
+                "filename": os.path.join(BASE_DIR, "logs/security.log"),
+                "formatter": "verbose",
+            },
+            # Log websocket events
+            "websocket": {
+                "level": "INFO",
+                "class": "logging.FileHandler",
+                "filename": os.path.join(BASE_DIR, "logs/websocket.log"),
+                "formatter": "verbose",
+            },
+            # Log HTTP requests
+            "requests": {
+                "level": "INFO",
+                "class": "logging.FileHandler",
+                "filename": os.path.join(BASE_DIR, "logs/requests.log"),
+                "formatter": "verbose",
+            },
+            # Log database queries
+            "database": {
+                "level": "DEBUG",
+                "class": "logging.FileHandler",
+                "filename": os.path.join(BASE_DIR, "logs/database.log"),
+                "formatter": "database",
+            },
+            # Log admin actions
+            "admin": {
+                "level": "DEBUG",
+                "class": "logging.FileHandler",
+                "filename": os.path.join(BASE_DIR, "logs/admin.log"),
+                "formatter": "verbose",
+            },
+            "auth": {
+                "level": "ERROR",
+                "class": "logging.FileHandler",
+                "filename": os.path.join(BASE_DIR, "logs/auth.log"),
+                "formatter": "verbose",
+            },
+        },
+        "loggers": {
+            # Default logger for the Django project
+            "django": {
+                "handlers": ["console", "file"],
+                "level": "DEBUG",  # You can switch to 'INFO' in production
+                "propagate": True,
+            },
+            # Logs for security-related events, such as logins
+            "django.security": {
+                "handlers": ["security"],
+                "level": "INFO",
+                "propagate": True,
+            },
+            # log errors
+            "django.error": {
+                "handlers": ["error"],
+                "level": "ERROR",
+                "propagate": True,
+            },
+            # Logs websocket events
+            "websocket": {
+                "handlers": ["websocket"],
+                "level": "INFO",
+                "propagate": False,
+            },
+            # Logs requests
+            "django.request": {
+                "handlers": ["requests"],
+                "level": "INFO",
+                "propagate": True,
+            },
+            # Log database queries (use with caution; can generate huge logs)
+            "django.db.backends": {
+                "level": "DEBUG",  # Set to 'DEBUG' to log all queries
+                "handlers": ["database"],
+                "propagate": True,
+            },
+            # Your custom application logger
+            "django.admin": {
+                "handlers": ["admin"],
+                "level": "DEBUG",
+                "propagate": True,
+            },
+            "django.contrib.auth": {
+                "handlers": ["auth"],
+                "level": "ERROR",
+                "propagate": True,
+            },
         },
     },
 }

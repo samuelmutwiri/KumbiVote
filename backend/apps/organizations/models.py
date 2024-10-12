@@ -1,5 +1,7 @@
 from django.db import models
 
+from apps.users.models import User
+
 
 class OrganizationType(models.Model):
     """Type of organization."""
@@ -9,9 +11,7 @@ class OrganizationType(models.Model):
 
 
 class Organization(models.Model):
-    """
-    Manages Organization
-    """
+    """Manages Organization."""
 
     name = models.CharField(max_length=255)
     org_type = models.ForeignKey(OrganizationType, on_delete=models.CASCADE)
@@ -59,8 +59,8 @@ class Body(models.Model):
         "branch": "Branch",
     }
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
-    unit = models.ForeignKey(OrganizationalUnit, on_delete=models.CASCADE, null=True)
-    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, null=True, blank=True)
+    unit = models.ManyToManyField(OrganizationalUnit, blank=True, null=True)
+    branch = models.ManyToManyField(Branch, blank=True, null=True)
     name = models.CharField(max_length=255)
     level = models.CharField(choices=LEVELS)
     is_active = models.BooleanField(default=True)
@@ -68,7 +68,6 @@ class Body(models.Model):
 
 class Term(models.Model):
     body = models.ForeignKey(Body, on_delete=models.CASCADE)
-    poll = models.IntegerField(default=0, null=True, blank=True)
     cycle = models.DurationField()
     starts = models.DateField()
     lapses = models.DateField()
@@ -86,6 +85,7 @@ class Position(models.Model):
 
 
 class Member(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
@@ -108,7 +108,7 @@ class Member(models.Model):
 
 class Incumbent(models.Model):
     position = models.ForeignKey(Position, on_delete=models.CASCADE)
-    member = models.IntegerField(default=0)
+    member = models.OneToOneField(Member, on_delete=models.CASCADE)
     term = models.ForeignKey(Term, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     cycle = models.IntegerField(default=1)

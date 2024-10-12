@@ -1,40 +1,40 @@
-from django.conf import settings
+import logging
+
+from django.contrib.auth.signals import (
+    user_logged_in,
+    user_logged_out,
+    user_login_failed,
+)
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.utils import timezone
 
-from .models import ActivityLog, User, UserProfile  # noqa: F401
+from .models import User  # noqa: F401
 
-
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.create(user=instance)
-
-
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def save_user_profile(sender, instance, **kwargs):
-    instance.userprofile.save()
+logger = logging.getLogger("django.contrib.auth")
 
 
 @receiver(post_save, sender=User)
-def log_user_creation(sender, instance, created, **kwargs):
-    if created:
-        # Log user creation
-        ActivityLog.objects.create(
-            user=instance,
-            url="/users/register/",
-            action="User Registered",
-            timestamp=timezone.now(),
-        )
+def log_superuser_creation(sender, instance, created, **kwargs):
+    if created and instance.is_superuser:
+        logger.info("Superuser %s created", instance.email)
 
 
 @receiver(post_save, sender=User)
-def log_user_update(sender, instance, **kwargs):
-    # Log user updates
-    ActivityLog.objects.create(
-        user=instance,
-        url="/users/profile/",
-        action="User Updated Profile",
-        timestamp=timezone.now(),
-    )
+def log_superuser_password_change(sender, instance, created, **kwargs):
+    if instance.is_superuser and "password" in instance.get_dirty_fields():
+        logger.info("Superuser %s changed password", instance.email)
+
+
+@receiver(user_logged_in)
+def log_login(sender, instance, request, **kwargs):
+    logger.info("User %s logged in", instance.email)
+
+
+@receiver(user_logged_out)
+def log_logout(sender, instance, request, **kwargs):
+    logger.info("User %s logged out", instance.email)
+
+
+@receiver(user_login_failed)
+def log_login_failed(sender, credentials, request, **kwargs):
+    logger.error("Failed login attempt with credentialsi %s", credentials)

@@ -1,7 +1,40 @@
-# Register your models here.
 from django.contrib import admin
 
-from .models import User, UserProfile
+from .models import User
 
-admin.site.register(User)
-admin.site.register(UserProfile)
+
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = (
+        "get_gender",
+        "full_name",
+        "email",
+        "is_staff",
+        "is_active",
+        "is_superuser",
+        "created",
+    )
+    search_fields = (
+        "first_name",
+        "middle_name",
+        "email",
+        "username",
+        "document_id",
+        "phone_no",
+    )
+    list_filter = (
+        "is_staff",
+        "is_active",
+        "is_superuser",
+        "gender",
+        "id_type",
+        "is_staff",
+        "is_superuser",
+        "is_active",
+    )
+    ordering = ("-created", "is_staff", "is_superuser", "is_active")
+
+    def full_name(self, obj):
+        return f"{obj.first_name} {obj.surname}"
+
+    full_name.short_description = "Name"

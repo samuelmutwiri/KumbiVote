@@ -2,8 +2,10 @@ import json
 
 from django.utils.decorators import method_decorator
 from django.views.decorators.debug import sensitive_post_parameters
-from oauth2_provider.contrib.rest_framework import (OAuth2Authentication,
-                                                    TokenHasScope)
+from oauth2_provider.contrib.rest_framework import (
+    OAuth2Authentication,
+    TokenHasScope,
+)
 from oauth2_provider.models import AccessToken
 from oauth2_provider.views.generic import ProtectedResourceView
 from rest_framework.permissions import IsAuthenticated

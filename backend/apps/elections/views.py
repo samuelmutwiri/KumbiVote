@@ -1,8 +1,13 @@
 from rest_framework import viewsets
 
 from .models import Ballot, Candidate, Election, Poll, Result
-from .serializers import (BallotSerializer, CandidateSerializer,
-                          ElectionSerializer, PollSerializer, ResultSerializer)
+from .serializers import (
+    BallotSerializer,
+    CandidateSerializer,
+    ElectionSerializer,
+    PollSerializer,
+    ResultSerializer,
+)
 
 
 class ElectionViewSet(viewsets.ModelViewSet):
