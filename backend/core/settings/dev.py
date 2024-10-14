@@ -11,29 +11,27 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 import os
+from datetime import timedelta
 from pathlib import Path
 
 import psycopg2.extensions
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = "django-insecure-1&1jv)pbljba!y+qud2-z4xn-ecmsasomef+(%9h!2n2do01^w"
 SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -42,19 +40,17 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Third Party
-    # TODO: Remove rest_framework & rest_framework_simplejwt.
     "rest_framework",
     "rest_framework_simplejwt",
+    "rest_framework.authtoken",
     "corsheaders",
     "oauth2_provider",
-    "channels",
-    "channels_redis",
     # Internal
     "apps.elections",
     "apps.organizations",
     "apps.users",
-    "apps.voters",
     "apps.common",
+    "apps.api",
 ]
 
 MIDDLEWARE = [
@@ -67,6 +63,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "core.middleware.PublicKeyVerificationMiddleware",
+    "core.middleware.TokenVerificationMiddleware",
 ]
 
 AUTH_USER_MODEL = "users.User"
@@ -88,26 +85,38 @@ OAUTH2_PROVIDER = {
     "SCOPES": {"read": "Read Scope", "write": "Write Scope"},
 }
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
 
 ASGI_APPLICATION = "core.asgi.application"
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer",
-        "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
-        },
-    },
-}
+# PKI Configuration
+KV_PKI_PRIVATE_DEV = config("DEV_PKI_PRIVATE")
+KV_PKI_PUBLIC_DEV = config("DEV_PKI_PUBLIC")
 
-# PRIVATE_KEY = open(config(SECRET_KEY)).read()
-# PUBLIC_KEY = open(config(PUBLIC_KEY)).read()
+with open(os.path.join(ROOT_DIR, KV_PKI_PRIVATE_DEV)) as f:
+    PRIVATE_KEY = f.read()
 
+with open(os.path.join(ROOT_DIR, KV_PKI_PUBLIC_DEV)) as f:
+    PUBLIC_KEY = f.read()
+
+# JWT Configuration
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-    )
+    ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
+    ),
+}
+
+SIMPLE_JWT = {
+    "ALGORITHM": "RS256",
+    "SIGNING_KEY": PRIVATE_KEY,
+    "VERIFYING_KEY": PUBLIC_KEY,
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
 
 TEMPLATES = [
@@ -198,47 +207,47 @@ LOGGING = {
             "file": {
                 "level": "INFO",
                 "class": "logging.FileHandler",
-                "filename": os.path.join(BASE_DIR, "logs/global.log"),
+                "filename": os.path.join(ROOT_DIR, "logs/global.log"),
                 "formatter": "verbose",
             },
             "security": {
                 "level": "INFO",
                 "class": "logging.FileHandler",
-                "filename": os.path.join(BASE_DIR, "logs/security.log"),
+                "filename": os.path.join(ROOT_DIR, "logs/security.log"),
                 "formatter": "verbose",
             },
             # Log websocket events
             "websocket": {
                 "level": "INFO",
                 "class": "logging.FileHandler",
-                "filename": os.path.join(BASE_DIR, "logs/websocket.log"),
+                "filename": os.path.join(ROOT_DIR, "logs/websocket.log"),
                 "formatter": "verbose",
             },
             # Log HTTP requests
             "requests": {
                 "level": "INFO",
                 "class": "logging.FileHandler",
-                "filename": os.path.join(BASE_DIR, "logs/requests.log"),
+                "filename": os.path.join(ROOT_DIR, "logs/requests.log"),
                 "formatter": "verbose",
             },
             # Log database queries
             "database": {
                 "level": "DEBUG",
                 "class": "logging.FileHandler",
-                "filename": os.path.join(BASE_DIR, "logs/database.log"),
+                "filename": os.path.join(ROOT_DIR, "logs/database.log"),
                 "formatter": "database",
             },
             # Log admin actions
             "admin": {
                 "level": "DEBUG",
                 "class": "logging.FileHandler",
-                "filename": os.path.join(BASE_DIR, "logs/admin.log"),
+                "filename": os.path.join(ROOT_DIR, "logs/admin.log"),
                 "formatter": "verbose",
             },
             "auth": {
                 "level": "ERROR",
                 "class": "logging.FileHandler",
-                "filename": os.path.join(BASE_DIR, "logs/auth.log"),
+                "filename": os.path.join(ROOT_DIR, "logs/auth.log"),
                 "formatter": "verbose",
             },
         },

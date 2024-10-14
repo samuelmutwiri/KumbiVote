@@ -1,6 +1,19 @@
 import React from "react";
 
 const Dashboard = () => {
+  fetch("/api/token/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username, password }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      localStorage.setItem("token", data.access);
+      window.location.href = "/dashboard";
+    });
+
   return (
     <div className="w-[80%] mx-auto flex justify-center items-center h-screen ">
       <div className="w-full">

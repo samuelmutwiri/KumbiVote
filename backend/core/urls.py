@@ -17,14 +17,45 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import include, path
+from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView,
+)
 
-from apps.users.oauth2_views import TokenView  # noqa
-from apps.users.oauth2_views import RevokeTokenView, UserInfoView
+from apps.elections.views import ElectionViewSet
+from apps.organizations.views import OrganizationViewSet
+
+# from apps.users.oauth2_views import (
+#     TokenView,  # noqa
+# )
+from apps.users.views import UserViewSet
+
+router = DefaultRouter()
+router.register(r"users", UserViewSet)
+router.register(r"elections", ElectionViewSet)
+router.register(r"organizations", OrganizationViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("o/", include("oauth2_provider.urls", namespace="oauth2_provider")),
-    path("oauth2/userinfo", UserInfoView.as_view(), name="oauth2_userinfo"),
-    path("oauth2/token", TokenView.as_view(), name="oauth2_token"),
-    path("oauth2/revoke_token/", RevokeTokenView.as_view(), name="oauth2_revoke_token"),
+    path(
+        "api/",
+        include(router.urls),
+    ),
+    path(
+        "api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"
+    ),
+    path(
+        "api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"
+    ),
+    path("api/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
+    #     path("o/", include("oauth2_provider.urls", namespace="oauth2_provider")),
+    #     path("oauth2/userinfo", UserInfoView.as_view(), name="oauth2_userinfo"),
+    #     path("oauth2/token", TokenView.as_view(), name="oauth2_token"),
+    #     path(
+    #         "oauth2/revoke_token/",
+    #         RevokeTokenView.as_view(),
+    #         name="oauth2_revoke_token",
+    #     ),
 ]

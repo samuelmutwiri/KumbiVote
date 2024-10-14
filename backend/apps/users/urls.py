@@ -1,18 +1,26 @@
 from django.urls import path
 
-from apps.users import views
-
-# from .views import UserProfileViewSet, UserViewSet
-
-# router = DefaultRouter()
-# router.register(r"users", UserViewSet)
-# router.register(r"profile", UserProfileViewSet)
+from . import views
 
 urlpatterns = [
-    path("admin", views.admin_view, name="admin"),
-    path("login", views.login_view, name="login"),
-    path("profile/", views.profile_view, name="profile"),
-    path("register/", views.register_view, name="register"),
-    path("logout", views.logout_view, name="logout"),
-    #    path("", include(router.urls)),
+    path(
+        "",
+        views.UserViewSet.as_view({"get": "list"}),
+    ),
+    path(
+        "<int:pk>/",
+        views.UserViewSet.as_view({"get": "retrieve"}),
+    ),
+    path(
+        "create/",
+        views.UserViewSet.as_view({"post": "create"}),
+    ),
+    path(
+        "<int:pk>/update/",
+        views.UserViewSet.as_view({"put": "update"}),
+    ),
+    path(
+        "<int:pk>/delete/",
+        views.UserViewSet.as_view({"delete": "destroy"}),
+    ),
 ]

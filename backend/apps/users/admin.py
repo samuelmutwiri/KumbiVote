@@ -1,6 +1,10 @@
+import logging
+
 from django.contrib import admin
 
 from .models import User
+
+logger = logging.getLogger("admin")
 
 
 @admin.register(User)
@@ -18,8 +22,8 @@ class UserAdmin(admin.ModelAdmin):
     search_fields = (
         "first_name",
         "middle_name",
+        "last_name",
         "email",
-        "username",
         "document_id",
         "phone_no",
     )
@@ -36,6 +40,6 @@ class UserAdmin(admin.ModelAdmin):
     ordering = ("-created", "is_staff", "is_superuser", "is_active")
 
     def full_name(self, obj):
-        return f"{obj.first_name} {obj.last_name}"
+        return f"{obj.first_name} {obj.middle_name} {obj.last_name}"
 
     full_name.short_description = "Name"
