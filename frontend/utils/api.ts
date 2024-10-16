@@ -29,7 +29,7 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       try {
         const refreshToken = getToken('refreshToken');
-        const response = await axios.post(`${API_URL}/auth/refresh`, { refreshToken });
+        const response = await axios.post(`${API_URL}/api/token/refresh`, { refreshToken });
         const { accessToken } = response.data;
         setToken(accessToken);
         originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
@@ -47,7 +47,7 @@ api.interceptors.response.use(
 
 export const login = async (username: string, password: string) => {
   try {
-    const response = await api.post('/auth/login', { username, password });
+    const response = await api.post('/api/token/', { username, password });
     const { accessToken, refreshToken } = response.data;
     setToken(accessToken);
     setToken(refreshToken, 'refreshToken');
@@ -78,30 +78,3 @@ export const unauthenticatedGet = (url: string, config = {}) => {
 export const unauthenticatedPost = (url: string, data: any, config = {}) => {
   return axios.post(`${API_URL}${url}`, data, config);
 };
-
-//import axios from 'axios';
-//import Cookies from 'js-cookie';
-//import authService from '../services/authService';
-//
-//const api = axios.create({
-//  baseURL: process.env.NEXT_PUBLIC_API_URL,
-//  withCredentials: true, // This is important for handling cookies
-//});
-//
-//api.interceptors.request.use(async (config) => {
-//  // Add CSRF token to the request
-//  const csrfToken = Cookies.get('csrftoken');
-//  if (csrfToken) {
-//    config.headers['X-CSRFToken'] = csrfToken;
-//  }
-//
-//  // Add authentication token to the request
-//  const token = await authService.getValidToken();
-//  if (token) {
-//    config.headers['Authorization'] = `Bearer ${token}`;
-//  }
-//
-//  return config;
-//});
-//
-//export default api;

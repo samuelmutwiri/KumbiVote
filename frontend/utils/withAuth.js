@@ -1,6 +1,6 @@
-import { useContext, useEffect, props } from 'react';
+import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from '@/context/AuthContext';
 
 const withAuth = (WrappedComponent) => {
   return (props) => {

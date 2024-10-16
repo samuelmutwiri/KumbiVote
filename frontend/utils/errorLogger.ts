@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const ERROR_LOGGING_URL = `${process.env.NEXT_PUBLIC_API_URL}/log-error`;
+const ERROR_LOGGING_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/sys/log/`;
 
 export const logError = async (error: any) => {
   try {

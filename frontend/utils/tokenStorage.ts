@@ -16,15 +16,3 @@ export const removeToken = (type = 'accessToken') => {
   Cookies.remove(type);
 };
 
-
-export const setToken = (token: string, type = 'accessToken') => {
-  localStorage.setItem(type, token);
-};
-
-export const getToken = (type = 'accessToken'): string | null => {
-  return localStorage.getItem(type);
-};
-
-export const removeToken = (type = 'accessToken') => {
-  localStorage.removeItem(type);
-};
