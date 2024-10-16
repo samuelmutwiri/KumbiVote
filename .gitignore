@@ -9,7 +9,6 @@ __pycache__/
 old/
 old*/
 ._*
-_*
 bun.*
 .ruff_cache/
 .states/
