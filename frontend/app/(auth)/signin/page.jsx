@@ -1,45 +1,64 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { useWebSocket } from '../globalWSManager';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+import { login } from '../../services/auth';
+import axios from 'axios'; // To send log messages to the backend
+import Image from "next/image";
 
-const Signin() {
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
-  const { isConnected, send, addListener } = useWebSocket('wss://localhost/ws/global/login');
+const Signin = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [isShaking, setIsShaking] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // For loading state
+  //const logging_url = process.env.NEXT_PUBLIC_API_URL + '/api/sys/log/';
+  const logging_url = 'http://localhost:8000//api/sys/log/';
+  const router = useRouter();
 
-  useEffect(() => {
-    const removeListener = addListener('query_results', (data) => {
-      setResults(data.results);
-    });
-
-    return removeListener;
-  }, [addListener]);
-
-  const handleSubmit = async (e) => {
+  // Handle login with auth service
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (query.trim()) {
-      // Send query via WebSocket
-      send({ type: 'query', data: query });
+    setErrorMessage(''); // Clear previous errors
+    setSuccessMessage('');
+    setIsLoading(true);  // Show loading state
 
-      // Also send query via REST API
-      try {
-        const response = await fetch('/api/yourmodel/query/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ query }),
-        });
-        const data = await response.json();
-        setResults(data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
+    try {
+      const response = await login(email, password, rememberMe);
 
-      setQuery('');
+      // Send log event to backend
+      //const log_event = await axios.post(logging_url, { message: `User ${email} logged in successfully.` });
+      //console.log(log_event);
+
+      setSuccessMessage('Login successful!');
+      setIsLoading(false);
+
+      // Redirect to profile page after successful login
+      setTimeout(() => router.push('/dashboard'), 800);  // Delay to allow success message animation
+    } catch (error) {
+      setErrorMessage('Invalid credentials. Please try again.');
+      setIsShaking(true); // Trigger shake animation
+      setIsLoading(false);
+
+      // Log error to backend
+      //const log_event = await axios.post(logging_url, { message: `Login failed for user ${email}: ${error.message}` });
+      //console.log(log_event);
+
+      setTimeout(() => setIsShaking(false), 500); // Stop shaking after 500ms
     }
   };
+
+  const handleForgotPassword = async() => {
+    try {
+      await axios.post('/api/forgot-password', { email });
+      setSuccessMessage('Password reset link sent to your email');
+    } catch(error) {
+      setErrorMessage('Error sending reset instructions');
+    }
+  }
 
   return (
     <div className="py-4 md:py-8 ">
@@ -107,85 +126,154 @@ const Signin() {
               <div className="w-full h-0.5 bg-gray-200 "></div>
             </div>
 
-            <form
-              className="space-y-4 md:space-y-6"
-              method="POST"
-              action="/auth/login/"
-            >
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-900 "
-                >
-                  Your email
-                </label>
-                <input
-                  type="email"
-                  name="login"
-                  id="email"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full p-2.5 "
-                  placeholder="name@company.com"
-                  required=""
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block mb-2 text-sm font-medium text-gray-900 "
-                >
-                  Password
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  placeholder="••••••••"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full p-2.5 "
-                  required=""
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-start">
-                  <div className="flex items-center h-5">
-                    <input
-                      id="remember"
-                      aria-describedby="remember"
-                      type="checkbox"
-                      className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-teal-300"
-                    />
-                  </div>
-                  <div className="ml-3 text-sm">
-                    <label htmlFor="remember" className="text-gray-500 ">
-                      Remember me
-                    </label>
-                  </div>
-                </div>
-                <a
-                  href=""
-                  className="text-sm font-medium text-blue-600 hover:underline "
-                >
-                  Forgot password?
-                </a>
+            <div className="login-container">
+              <div className="notify flex items-center justify-center">
+                {errorMessage && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="{errorMessage} text-red-500 text-sm"
+                  >
+                    {errorMessage}
+                  </motion.div>
+                )}
+                  {successMessage && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="{successMessage} text-green-500 text-sm">
+                    {successMessage}
+                    </motion.div>
+                  )}
+                <style jsx>
+                  {`
+                    .error{
+                      background-color: #ffcccc;
+                      border: 2px solid red;
+                      border-radius: 5%;
+
+                    }
+                    .error-message {
+                      color: red;
+                    }
+                    .success{
+                      background-color: #ccffcc;
+                      border: 2px solid green;
+                      border-radius: 5%;
+                    }
+                    .success-message {
+                      color: green;
+                    }
+                    .shaking {
+                      animation: shake 0.5s ease-in-out;
+                    }
+                    @keyframes shake {
+                      0%, 100% {
+                        transform: translateX(0);
+                      }
+                      20%, 60% {
+                        transform: translateX(-10px);
+                      }
+                      40%, 80% {
+                        transform: translateX(10px);
+                      }
+                  }
+                  `}
+                </style>
+
+
               </div>
 
-              <button
-                type="submit"
-                onClick={() => {}} //TODO:Change to the correct function
-                className="text-white bg-blue-600 py-1.5 px-4 rounded font-bold w-full"
+              <motion.form
+                className="{login-form ${isShaking ? 'shaking' : '' }} space-y-4 md:space-y-6"
+                method="POST"
+                onSubmit={handleLogin}
               >
-                Sign in
-              </button>
+                <div className={`input-group ${errorMessage ? 'error' : ''}`}>
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block mb-2 text-sm font-medium text-gray-900 "
+                  >
+                    Your email
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full p-2.5 "
+                    placeholder="name@company.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="password"
+                    className="block mb-2 text-sm font-medium text-gray-900 "
+                  >
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    placeholder="••••••••"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full p-2.5 "
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-start">
+                    <div className="flex items-center h-5">
+                      <input
+                        id="rememberMe"
+                        aria-describedby="rememberMe"
+                        type="checkbox"
+                        className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-teal-300"
+                        onChange={(e) => setRememberMe(e.target.checked)}
+                      />
+                    </div>
+                    <div className="ml-3 text-sm">
+                      <label htmlFor="remember" className="text-gray-500 ">
+                        Remember me
+                      </label>
+                    </div>
+                  </div>
+                  <a
+                    href=""
+                    className="text-sm font-medium text-blue-600 hover:underline "
+                  >
+                    Forgot password?
+                  </a>
+                </div>
 
-              <p className="text-sm font-light text-gray-500 ">
-                Don&apos;t have an account yet?{" "}
-                <a
-                  href="/signup"
-                  className="font-medium text-blue-600 hover:underline "
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  type="submit"
+                  disabled={isLoading}
+                  className="text-white bg-blue-600 py-1.5 px-4 rounded font-bold w-full"
                 >
-                  Sign up
-                </a>
-              </p>
-            </form>
+                  {isLoading ? 'Loading...' : 'Sign in'}
+                </motion.button>
+
+
+                <p className="text-sm font-light text-gray-500 ">
+                  Don&apos;t have an account yet?{" "}
+                  <a
+                    href="/signup"
+                    className="font-medium text-blue-600 hover:underline "
+                  >
+                    Sign up
+                  </a>
+                </p>
+                </div>
+                </motion.form>
+              </div>
           </div>
         </div>
       </div>

@@ -1,18 +1,40 @@
 import React from "react";
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import authService from '../services/authService';
 
-const Dashboard = () => {
-  fetch("/api/token/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ username, password }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      localStorage.setItem("token", data.access);
-      window.location.href = "/dashboard";
-    });
+export default function Dashboard({ isAuthenticated }) {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push('/signin');
+    }
+  }, [isAuthenticated]);
+
+//  fetch("/api/token/", {
+//    method: "POST",
+//    headers: {
+//      "Content-Type": "application/json",
+//    },
+//    body: JSON.stringify({ username, password }),
+//  })
+//    .then((response) => response.json())
+//    .then((data) => {
+//      localStorage.setItem("token", data.access);
+//      window.location.href = "/dashboard";
+//    });
+//
+
+  const handleLogout = () => {
+    authService.logout();
+    router.push('/signin');
+  };
+
+  if (!isAuthenticated) {
+    return null; // or a loading spinner
+  }
+
 
   return (
     <div className="w-[80%] mx-auto flex justify-center items-center h-screen ">
@@ -70,4 +92,3 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;

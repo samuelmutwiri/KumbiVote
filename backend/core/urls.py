@@ -26,10 +26,6 @@ from rest_framework_simplejwt.views import (
 
 from apps.elections.views import ElectionViewSet
 from apps.organizations.views import OrganizationViewSet
-
-# from apps.users.oauth2_views import (
-#     TokenView,  # noqa
-# )
 from apps.users.views import UserViewSet
 
 router = DefaultRouter()
@@ -43,6 +39,7 @@ urlpatterns = [
         "api/",
         include(router.urls),
     ),
+    path("api/sys/", include("apps.api.urls")),
     path(
         "api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"
     ),
@@ -50,12 +47,4 @@ urlpatterns = [
         "api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"
     ),
     path("api/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
-    #     path("o/", include("oauth2_provider.urls", namespace="oauth2_provider")),
-    #     path("oauth2/userinfo", UserInfoView.as_view(), name="oauth2_userinfo"),
-    #     path("oauth2/token", TokenView.as_view(), name="oauth2_token"),
-    #     path(
-    #         "oauth2/revoke_token/",
-    #         RevokeTokenView.as_view(),
-    #         name="oauth2_revoke_token",
-    #     ),
 ]
