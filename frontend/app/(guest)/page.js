@@ -1,11 +1,11 @@
 import { IoIosArrowDropupCircle } from "react-icons/io";
-import NavigationBar from "@/components/NavigationBar";
+import NavigationBar from "@components/NavigationBar";
 
-import About from "@/components/About";
-import Features from "@/components/Features";
-import Footer from "@/components/Footer";
-import Hero from "@/components/Hero";
-import Steps from "@/components/Steps";
+import About from "@components/About";
+import Features from "@components/Features";
+import Footer from "@components/Footer";
+import Hero from "@components/Hero";
+import Steps from "@components/Steps";
 
 const Home = () => {
   return (

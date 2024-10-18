@@ -1,7 +1,6 @@
-// services/auth.js
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:8000'; // Django server URL
+const BASE_URL = 'http://localhost:8000'; // Backend server URL
 
 // Login user
 export const login = async (email, password) => {
@@ -11,11 +10,11 @@ export const login = async (email, password) => {
       password,
     });
 
-    const { access, refresh } = response.data;
+    const { accessToken, refreshToken } = response.data;
 
     // Store tokens in localStorage or cookies (or HttpOnly cookie for better security)
-    localStorage.setItem('access_token', access);
-    localStorage.setItem('refresh_token', refresh);
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('refreshToken', refreshToken);
 
     return true;
   } catch (error) {
@@ -27,13 +26,13 @@ export const login = async (email, password) => {
 // Refresh the token
 export const refreshToken = async () => {
   try {
-    const refreshToken = localStorage.getItem('refresh_token');
+    const refreshToken = localStorage.getItem('refreshToken');
     const response = await axios.post(`${BASE_URL}/api/token/refresh/`, {
       refresh: refreshToken,
     });
 
     const { access } = response.data;
-    localStorage.setItem('access_token', access);
+    localStorage.setItem('accessToken', access);
     return access;
   } catch (error) {
     console.error("Token refresh failed:", error);
@@ -42,11 +41,11 @@ export const refreshToken = async () => {
 };
 
 // Get access token
-export const getAccessToken = () => localStorage.getItem('access_token');
+export const getAccessToken = () => localStorage.getItem('accessToken');
 
 // Logout user
 export const logout = () => {
-  localStorage.removeItem('access_token');
-  localStorage.removeItem('refresh_token');
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
 };
 

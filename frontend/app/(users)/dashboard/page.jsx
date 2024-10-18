@@ -1,16 +1,38 @@
+'use client';
+
 import React from "react";
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import authService from '../services/authService';
+import ApiClient from '@utils/ApiClient';
 
 export default function Dashboard({ isAuthenticated }) {
-  const router = useRouter();
+  const [userDetails, setUserDetails] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/signin');
+  const router = useRouter();
+  const apiClient = new ApiClient();
+
+  const fetchUserDetails = async () => {
+    try{
+       response = await apiClient.get("/api/users/retrieve/");
+       console.log(response.data);
+       setUserDetails(response.data);
+    } catch (error) {
+      setError("An error occurred while fetching user details");
+    } finally {
+      setLoading(false);
     }
-  }, [isAuthenticated]);
+  };
+
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>{error}</div>;
+  }
+
 
 //  fetch("/api/token/", {
 //    method: "POST",
@@ -31,13 +53,17 @@ export default function Dashboard({ isAuthenticated }) {
     router.push('/signin');
   };
 
-  if (!isAuthenticated) {
-    return null; // or a loading spinner
-  }
-
-
   return (
     <div className="w-[80%] mx-auto flex justify-center items-center h-screen ">
+       <div>
+            <h1>User Profile</h1>
+            {userDetails && (
+                <div>
+                    <p>Name: {userDetails.first_name} {userDetails.last_name}</p>
+                    <p>Email: {userDetails.email}</p>
+                </div>
+            )}
+        </div>
       <div className="w-full">
         <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
           Upcoming Elections

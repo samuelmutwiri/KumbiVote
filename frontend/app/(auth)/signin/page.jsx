@@ -3,9 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { login } from '../../services/auth';
-import axios from 'axios'; // To send log messages to the backend
 import Image from "next/image";
+import APIClient from "@utils/ApiClient";
 
 const Signin = () => {
   const [email, setEmail] = useState('');
@@ -15,9 +14,11 @@ const Signin = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [isShaking, setIsShaking] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // For loading state
-  //const logging_url = process.env.NEXT_PUBLIC_API_URL + '/api/sys/log/';
-  const logging_url = 'http://localhost:8000//api/sys/log/';
+ // const logging_url = process.env.NEXT_PUBLIC_API_URL + '/api/sys/log/';
+  const logging_url = 'http://localhost:8000/api/sys/log/';
   const router = useRouter();
+  const apiClient = new APIClient();
+
 
   // Handle login with auth service
   const handleLogin = async (e) => {
@@ -27,18 +28,23 @@ const Signin = () => {
     setIsLoading(true);  // Show loading state
 
     try {
-      const response = await login(email, password, rememberMe);
+      const credentials = { email, password };
+//      const result =  apiClient.get('/api/sys/');
+      const result = await apiClient.login(credentials);
+      setSuccessMessage('Login successful!');
+      console.log('Login successful', result);
+      console.log(result.data);
 
       // Send log event to backend
-      //const log_event = await axios.post(logging_url, { message: `User ${email} logged in successfully.` });
-      //console.log(log_event);
+      const log_event = await apiClient.post(logging_url, { message: `User ${email} logged in successfully.` });
+      console.log(log_event);
 
       setSuccessMessage('Login successful!');
-      setIsLoading(false);
 
       // Redirect to profile page after successful login
-      setTimeout(() => router.push('/dashboard'), 800);  // Delay to allow success message animation
+      setTimeout(() => router.push('/dashboard'), 500);  // Delay to allow success message animation
     } catch (error) {
+      console.error(error);
       setErrorMessage('Invalid credentials. Please try again.');
       setIsShaking(true); // Trigger shake animation
       setIsLoading(false);
@@ -125,6 +131,7 @@ const Signin = () => {
               <div className="px-5 text-center text-gray-500 ">or</div>
               <div className="w-full h-0.5 bg-gray-200 "></div>
             </div>
+
 
             <div className="login-container">
               <div className="notify flex items-center justify-center">

@@ -1,4 +1,4 @@
-import Cookies from 'js-cookie';
+import Cookies from 'nookies';
 
 export const setCookie = (name: string, value: string, options = {}) => {
   Cookies.set(name, value, options);

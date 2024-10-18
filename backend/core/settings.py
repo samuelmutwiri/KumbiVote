@@ -84,8 +84,11 @@ OAUTH2_PROVIDER = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "http://localhost:8000",
+    "http://localhost",
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True
 ASGI_APPLICATION = "core.asgi.application"
 
 # PKI Configuration
@@ -103,7 +106,6 @@ with open(os.path.join(BASE_DIR, PKI_PUBLIC)) as f:
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-        "rest_framework_simplejwt.authentication.JWTStatelessUserAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
@@ -114,7 +116,7 @@ SIMPLE_JWT = {
     "ALGORITHM": "RS256",
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    "ROTATE_REFRESH_TOKENS": False,
+    "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "UPDATE_LAST_LOGIN": True,
     "SIGNING_KEY": KV_PRIVATE_KEY,
@@ -122,6 +124,11 @@ SIMPLE_JWT = {
     "ISSUER": "KumbiVote",
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "AUTH_COOKIE": "AccessToken",
+    "AUTH_COOKIE_REFRESH": "RefreshToken",
+    "AUTH_COOKIE_HTTPONLY": True,
+    "AUTH_COOKIE_SAMESITE": "Lax",
+    "AUTH_COOKIE_SECURE": False,
     "USER_ID_FIELD": "uuid",
     "USER_ID_CLAIM": "user_id",
     "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",

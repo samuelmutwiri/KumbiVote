@@ -1,3 +1,5 @@
+import React from 'react';
+
 const ErrorMessage = ({ message }) => {
   if (!message) return null; // Don't render anything if there's no message
 
@@ -20,3 +22,4 @@ const errorStyle = {
 };
 
 export default ErrorMessage;
+

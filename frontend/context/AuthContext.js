@@ -1,42 +1,43 @@
-import { createContext, useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { message } from 'antd';
 
-export const AuthContext = createContext();
+const withAuth = (WrappedComponent) => {
+  const AuthenticatedComponent = (props) => {
+    const router = useRouter();
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
+    useEffect(() => {
+      const checkAuth = () => {
+        const token = localStorage.getItem('access-token');
+        if (!token) {
+          router.replace('/signin');
+        } else {
+          setIsAuthenticated(true);
+        }
+        setIsLoading(false);
+      };
 
-  useEffect(() => {
-    // Check if user is logged in (e.g., by verifying a token in localStorage)
-    const checkLoggedIn = async () => {
-      // Implement your logic here
-      setLoading(false);
-    };
-    checkLoggedIn();
-  }, []);
+      checkAuth();
+    }, [router]);
 
-  const login = async (credentials) => {
-    try {
-      // Implement your login logic here
-      setUser(/* logged in user data */);
-      router.push('/dashboard');
-    } catch (error) {
-      message.error('Login failed');
+    if (isLoading) {
+      return <div>Loading...</div>;
     }
+
+    if (!isAuthenticated) {
+      return null;
+    }
+
+    return <WrappedComponent {...props} />;
   };
 
-  const logout = async () => {
-    // Implement your logout logic here
-    setUser(null);
-    router.push('/');
-  };
+  // Copy getInitialProps so it will run as well
+  if (WrappedComponent.getInitialProps) {
+    AuthenticatedComponent.getInitialProps = WrappedComponent.getInitialProps;
+  }
 
-  return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return AuthenticatedComponent;
 };
+
+export default withAuth;

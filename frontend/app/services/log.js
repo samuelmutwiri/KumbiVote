@@ -4,9 +4,14 @@ export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
       const { message } = req.body;
+      const accessToken  = localStorage.getItem('accessToken');
+      const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      };
 
       // Send log message to Django backend
-      await axios.post('http://localhost:8000/api/sys/log/', { message });
+      const response = await axios.post('http://localhost:8000/api/sys/log/', { message });
 
       res.status(200).json({ success: true });
     } catch (error) {
