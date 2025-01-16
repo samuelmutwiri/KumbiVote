@@ -6,14 +6,22 @@ KumbiVote is a decentralized voting platform built on the Polygon network. It pr
 
 ## Project Structure
 
-- #### contracts/: Contains the Solidity smart contracts.
-- #### migrations/: Migration scripts for deploying contracts.
-- #### test/: Unit and integration tests.
-- #### scripts/: Scripts for deployment and contract interaction.
-- #### build/: Compiled contract artifacts.
-- #### truffle-config.js**: Configuration for Truffle framework.
+- #### backend/: Project's Django backend
+- #### frontend/: UI components built with Next.js
+- #### blockchain/: Smart Contracts and blockchain components
+- #### scripts/: Automation scripts
 
 ## Setup
+For Debian and derivatives (Ubuntu, PopOS, etc.) our setup script would suffice.
+To use this method navigate to the desired installation path and execute the following command:
+
+```bash
+
+curl -sSL https://kumbi.ke/scripts/setup.sh | sh
+
+```
+
+For manual setup please follow the instructions provided below -
 
 ### Prerequisites
 
@@ -162,22 +170,13 @@ List of common useful postgresql management commands and initial login.
 If PostgreSQL is already installed and the service is running you may run the
 command below to enter the psql shell.
 
-```bash
-psql -h hostname -p port -U postgres
-```
 
-
-- ##### setup.sql
-SQL script for initial setup so roles, users, privileges and database creation.
+Unless you want to manually define your roles please use the db_setup.sh script.
+This script defines the initial setup so roles, users, privileges and database creation.
 You may use this script to set up the database and users thus:
 
 ```bash
-psql -h localhost -U postgres < ~/Code/python/KumbiVote/backend/utils/psql/setup.sql
-```
-
-Alternatively you may load the script from the psql shell:
-```bash
-psql#LOAD ~/path/to/script/
+sh scripts/db_setup.sh
 ```
 
 - ##### Test PostgreSQL connection to backend
