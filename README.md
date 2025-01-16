@@ -12,6 +12,7 @@ KumbiVote is a decentralized voting platform built on the Polygon network. It pr
 - #### scripts/: Automation scripts
 
 ## Setup
+### Automated Setup (Recommended)
 For Debian and derivatives (Ubuntu, PopOS, etc.) our setup script would suffice.
 To use this method navigate to the desired installation path and execute the following command:
 
@@ -21,6 +22,7 @@ curl -sSL https://kumbi.ke/scripts/setup.sh | sh
 
 ```
 
+### Manual Setup (Advanced)
 For manual setup please follow the instructions provided below -
 
 ### Prerequisites
