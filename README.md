@@ -112,11 +112,14 @@ cd KumbiVote
 # Change to the backend directory
 cd backend
 
-# Install a Python virtual environment
-python3 -m venv venv
+# Install pipenv usng pip on the global environment
+# OSX and Linux
+pip3 install pipenv
+# Windows
+pip install pipenv
 
-# Activate the virtual environment
-source venv/bin/activate
+# Activate the virtual environment (all platforms)
+pipenv shell
 
 # Install dependencies
 pip install -r requirements.txt
